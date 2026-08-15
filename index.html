@@ -1,384 +1,2341 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TestUrSelf | Materials Engineering Hub & Blog</title>
-  
-  <!-- Three.js 3D Library & Icons -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- MathJax for Formulas & Equations -->
-  <script>
-    window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestUrSelf | GATE Metallurgy & PSU Preparation Platform</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-  <style>
-    :root {
-      --bg-dark: #0b0f19;
-      --card-bg: rgba(17, 24, 39, 0.75);
-      --border-glow: rgba(59, 130, 246, 0.25);
-      --accent-blue: #3b82f6;
-      --accent-cyan: #06b6d4;
-      --text-primary: #f3f4f6;
-      --text-muted: #9ca3af;
-    }
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Outfit"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a', 950: '#0f172a',
+                        },
+                        gold: {
+                            100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15',
+                            500: '#eab308', 600: '#ca8a04', 700: '#a16207',
+                        }
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, rgba(226, 232, 240, 0.4) 1px, transparent 1px), linear-gradient(to bottom, rgba(226, 232, 240, 0.4) 1px, transparent 1px)",
+                        'dark-grid': "linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)",
+                    },
+                    animation: {
+                        'marquee': 'marquee 25s linear infinite',
+                        'float': 'float 5s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateY(0%)' },
+                            '100%': { transform: 'translateY(-50%)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(1deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                            '50%': { opacity: '0.8', transform: 'scale(1.08)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      overflow-x: hidden;
-    }
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
 
-    /* Navbar */
-    header {
-      background: rgba(11, 15, 25, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-glow);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      padding: 1rem 5%;
-    }
-    .nav-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .brand {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #ffffff;
-      text-decoration: none;
-    }
-    .brand span { color: var(--accent-cyan); }
-    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: #ffffff; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
 
-    /* Hero Section */
-    .hero-container {
-      position: relative;
-      min-height: 85vh;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 2rem 5%;
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-    #canvas-container {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 55%;
-      height: 100%;
-      z-index: 1;
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 580px;
-      backdrop-filter: blur(10px);
-      background: rgba(11, 15, 25, 0.65);
-      padding: 2.5rem;
-      border-radius: 20px;
-      border: 1px solid var(--border-glow);
-    }
-    .hero-badge {
-      display: inline-block;
-      padding: 6px 14px;
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--accent-cyan);
-      border: 1px solid rgba(6, 182, 212, 0.4);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 1.2rem;
-    }
-    .hero-title {
-      font-size: 2.8rem;
-      line-height: 1.15;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .hero-subtitle {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-    .btn-group { display: flex; gap: 1rem; }
-    .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #06b6d4);
-      color: #fff;
-      padding: 12px 26px;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform 0.2s;
-    }
-    .btn-primary:hover { transform: translateY(-2px); }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      padding: 12px 26px;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
+        .text-gradient {
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    /* Sections */
-    .section-container {
-      padding: 5rem 5%;
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-    .section-header { text-align: center; margin-bottom: 3.5rem; }
-    .section-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-    }
-    .glass-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-glow);
-      border-radius: 16px;
-      padding: 2rem;
-      backdrop-filter: blur(12px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .glass-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--accent-cyan);
-    }
-    .card-icon { font-size: 2rem; color: var(--accent-cyan); margin-bottom: 1.2rem; }
-    .card-title { font-size: 1.3rem; margin-bottom: 0.8rem; }
-    .card-text { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #ca8a04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    /* Footer */
-    footer {
-      background: #080c14;
-      border-top: 1px solid var(--border-glow);
-      padding: 3.5rem 5% 2rem;
-      margin-top: 4rem;
-      color: var(--text-muted);
-    }
+        .card-perspective {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card-perspective:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 30px -10px rgba(37, 99, 235, 0.15);
+        }
 
-    @media (max-width: 900px) {
-      .hero-container { flex-direction: column; padding-top: 3rem; }
-      #canvas-container { position: relative; width: 100%; height: 320px; }
-      .hero-title { font-size: 2.2rem; }
-    }
-  </style>
+        .news-container:hover .news-marquee { 
+            animation-play-state: paused; 
+        }
+
+        .modal-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.75);
+        }
+
+        .tab-active {
+            background-color: #1d4ed8 !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.4);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 font-sans selection:bg-brand-500 selection:text-white overflow-x-hidden relative">
 
-  <!-- Navigation Bar -->
-  <header>
-    <div class="nav-container">
-      <a href="/" class="brand"><span>Test</span>UrSelf</a>
-      <nav class="nav-links">
-        <a href="#courses">Courses</a>
-        <a href="#blog">Articles</a>
-        <a href="#contact" class="btn-primary" style="padding: 8px 18px; font-size: 0.9rem;">Join Now</a>
-      </nav>
-    </div>
-  </header>
+    <!-- Full-screen Ambient Interactive Background Canvas -->
+    <canvas id="ambientBgCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-25"></canvas>
 
-  <!-- 3D Hero Section -->
-  <div class="hero-container">
-    <div class="hero-content">
-      <span class="hero-badge"><i class="fas fa-atom"></i> Next-Gen Materials Engineering</span>
-      <h1 class="hero-title">Master Metallurgy & Materials Science</h1>
-      <p class="hero-subtitle">
-        Explore crystal lattices, thermodynamics, and kinetics with real-time interactive 3D visualizations.
-      </p>
-      <div class="btn-group">
-        <a href="#courses" class="btn-primary">Explore Courses</a>
-        <a href="#blog" class="btn-secondary">Read Blog</a>
-      </div>
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-900 text-white py-2 px-4 text-xs font-semibold text-center flex items-center justify-center gap-3 relative z-[101]">
+        <span class="bg-gold-400 text-slate-950 font-black px-2 py-0.5 rounded uppercase text-[10px] tracking-wider animate-pulse">GATE 2027 Syllabus Integrated</span>
+        <span>GATE 2027 Admissions Open for Classroom & Online Live Program!</span>
+        <a href="#syllabus-slider" class="underline text-gold-300 hover:text-white font-bold ml-2">Explore 8-Module Syllabus Slider &rarr;</a>
     </div>
-    <div id="canvas-container"></div>
-  </div>
 
-  <!-- Course Modules -->
-  <section id="courses" class="section-container">
-    <div class="section-header">
-      <h2 class="section-title">Core Engineering Modules</h2>
-      <p style="color: var(--text-muted)">Designed for GATE, BARC, and Advanced Conceptual Mastery</p>
-    </div>
-    <div class="card-grid">
-      <div class="glass-card">
-        <div>
-          <div class="card-icon"><i class="fas fa-cube"></i></div>
-          <h3 class="card-title">Physical Metallurgy & Crystallography</h3>
-          <p class="card-text">Unit cells, dislocation theory, phase diagrams, TTT/CCT curves, and microstructure kinetics.</p>
+    <!-- Main Sticky Navbar -->
+    <nav class="glass-nav fixed top-0 w-full z-[100] transition-all duration-300 h-20" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 h-full flex justify-between items-center">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white p-2.5 rounded-xl shadow-md group-hover:rotate-[360deg] transition-transform duration-700">
+                    <i class="fa-solid fa-atom text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-heading font-extrabold text-slate-900 tracking-tight leading-none">TestUr<span class="text-brand-600">Self</span></span>
+                    <span class="text-[9px] font-bold text-slate-500 tracking-widest uppercase mt-0.5">GATE Metallurgy Hub</span>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation Links -->
+            <div class="hidden lg:flex space-x-7 font-semibold text-slate-700 items-center text-sm">
+                <a href="#home" class="hover:text-brand-600 transition-colors">Home</a>
+                <a href="#syllabus-slider" class="hover:text-brand-600 transition-colors flex items-center gap-1.5 text-brand-600 font-extrabold">
+                    <i class="fa-solid fa-sliders text-xs"></i> Syllabus Slider
+                </a>
+                <a href="#qod-simulator" class="hover:text-brand-600 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-laptop-code text-xs text-rose-500"></i> Exam Simulator
+                </a>
+                <a href="#legacy" class="hover:text-brand-600 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-crown text-amber-500 text-xs"></i> Hall of Fame
+                </a>
+                <a href="#courses" class="hover:text-brand-600 transition-colors">Programs</a>
+                <a href="#tools" class="hover:text-brand-600 transition-colors flex items-center gap-1.5">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    Rank Estimator
+                </a>
+                <a href="#blogs" class="hover:text-brand-600 transition-colors">Blogs</a>
+                <a href="#founder" class="hover:text-brand-600 transition-colors">Mentor</a>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="hidden lg:flex items-center gap-4">
+                <button onclick="openModal('loginModal')" class="text-slate-700 font-bold hover:text-brand-600 text-sm px-3 py-2">
+                    <i class="fa-solid fa-user-lock mr-1.5"></i> Student Portal
+                </button>
+                <a href="#courses" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-brand-500/20 hover:shadow-brand-500/40 transform hover:-translate-y-0.5">
+                    Get Started
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="lg:hidden text-slate-800 text-2xl p-2 rounded-lg hover:bg-slate-100">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
         </div>
-        <a href="#contact" class="btn-secondary" style="text-align: center;">View Module</a>
-      </div>
-      <div class="glass-card">
-        <div>
-          <div class="card-icon"><i class="fas fa-fire-alt"></i></div>
-          <h3 class="card-title">Thermodynamics & Kinetics</h3>
-          <p class="card-text">Ellingham diagrams, chemical driving forces, diffusion laws, and high-temperature reactions.</p>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl flex flex-col p-6 space-y-4 lg:hidden max-h-[calc(100vh-5rem)] overflow-y-auto z-50">
+            <a href="#home" class="font-bold text-base border-b pb-2 text-slate-800">Home</a>
+            <a href="#countdown" class="font-bold text-base border-b pb-2 text-amber-600 flex items-center gap-2"><i class="fa-solid fa-clock text-xs"></i> GATE 2027/28 Countdown</a>
+            <a href="#gate-dates" class="font-bold text-base border-b pb-2 text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-calendar-days text-xs"></i> GATE 2027 Important Dates</a>
+            <a href="#qod-simulator" class="font-bold text-base border-b pb-2 text-emerald-600 flex items-center gap-2"><i class="fa-solid fa-laptop-code text-xs"></i> GATE QOD Exam Simulator</a>
+            <a href="#syllabus-slider" class="font-bold text-base border-b pb-2 text-brand-600 flex items-center gap-2"><i class="fa-solid fa-sliders text-xs"></i> 8-Section Syllabus Slider</a>
+            <a href="#legacy" class="font-bold text-base border-b pb-2 text-amber-600 flex items-center gap-2"><i class="fa-solid fa-crown text-xs"></i> Hall of Fame (AIR 1)</a>
+            <a href="#blogs" class="font-bold text-base border-b pb-2 text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-newspaper text-xs"></i> Metallurgy Blogs</a>
+            <a href="#courses" class="font-bold text-base border-b pb-2 text-slate-800">All Courses & Test Series</a>
+            <a href="#tools" class="font-bold text-base border-b pb-2 text-emerald-600 flex items-center gap-2"><i class="fa-solid fa-calculator text-xs"></i> GATE Rank Estimator</a>
+            <a href="#psu" class="font-bold text-base border-b pb-2 text-slate-800">PSU Preparation</a>
+            <a href="#founder" class="font-bold text-base border-b pb-2 text-slate-800">Samarjeet Sir Profile</a>
+            <div class="pt-2 flex flex-col gap-3">
+                <button onclick="openModal('loginModal')" class="w-full bg-slate-100 text-slate-800 py-3 rounded-xl font-bold text-center">Login to LMS</button>
+                <a href="https://wa.me/919876543210?text=Hi%20Samarjeet%20Sir%2C%20I%20want%20to%20enroll%20in%20GATE%20Metallurgy%20Course" target="_blank" class="w-full bg-emerald-600 text-white text-center py-3.5 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-lg"></i> Chat on WhatsApp</a>
+            </div>
         </div>
-        <a href="#contact" class="btn-secondary" style="text-align: center;">View Module</a>
-      </div>
-      <div class="glass-card">
-        <div>
-          <div class="card-icon"><i class="fas fa-compress-arrows-alt"></i></div>
-          <h3 class="card-title">Mechanical Metallurgy & Fracture</h3>
-          <p class="card-text">Generalized Hooke's Law, slip systems, creep deformation, and fatigue fracture mechanics.</p>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-16 relative overflow-hidden bg-white/80 backdrop-blur-sm z-10">
+        <div class="absolute bottom-0 left-10 w-[400px] h-[400px] bg-amber-100 rounded-full mix-blend-multiply filter blur-[100px] opacity-40"></div>
+
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Hero Text Content -->
+                <div class="lg:col-span-7 text-center lg:text-left" data-aos="fade-right">
+                    <div class="inline-flex items-center gap-2.5 bg-brand-50 border border-brand-200 rounded-full px-4 py-1.5 mb-6 shadow-sm">
+                        <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span class="text-xs font-extrabold text-brand-800 uppercase tracking-widest">Rank 1 Factory in GATE MT</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-heading font-extrabold leading-[1.08] mb-6 text-slate-900 tracking-tight">
+                        Forge Your <br>
+                        <span class="text-gradient relative">
+                            Metallurgy
+                            <svg class="absolute w-full h-3 -bottom-2 left-0 text-brand-300 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" />
+                            </svg>
+                        </span>
+                        Mastery
+                    </h1>
+                    
+                    <p class="text-base sm:text-lg text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
+                        Master Physical, Extractive, and Mechanical Metallurgy with <span class="text-slate-900 font-bold underline decoration-brand-500 decoration-2">Samarjeet Kumar Singh</span>. The premier platform that produced <span class="text-brand-700 font-extrabold">AIR-1 for 6 Consecutive Years</span> in GATE Metallurgy.
+                    </p>
+                    
+                    <!-- CTAs -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#syllabus-slider" class="bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-2xl font-extrabold text-base shadow-xl shadow-brand-600/25 transition transform hover:-translate-y-1 flex items-center justify-center gap-3 group">
+                            Explore GATE 2027 Syllabus Slider <i class="fa-solid fa-arrow-right group-hover:translate-x-1.5 transition-transform"></i>
+                        </a>
+                        <button onclick="openModal('quizModal')" class="bg-white border-2 border-slate-200 text-slate-800 px-7 py-4 rounded-2xl font-extrabold text-base hover:border-brand-500 hover:text-brand-700 hover:bg-brand-50/50 transition flex items-center justify-center gap-2.5 shadow-sm">
+                            <i class="fa-solid fa-bolt text-amber-500"></i> Take 3-Min Quiz
+                        </button>
+                    </div>
+
+                    <!-- Social Proof Badges -->
+                    <div class="mt-10 pt-8 border-t border-slate-100 flex flex-wrap items-center gap-6 justify-center lg:justify-start">
+                        <div class="flex -space-x-2">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" alt="Student">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" alt="Student">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm" alt="Student">
+                            <div class="w-10 h-10 rounded-full border-2 border-white bg-brand-700 text-white flex items-center justify-center text-[10px] font-black">+5k</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1 text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                <span class="text-slate-800 font-bold ml-1 text-sm">4.95 / 5.0 Rating</span>
+                            </div>
+                            <p class="text-xs font-semibold text-slate-500">From 5,000+ Metallurgical Engineers nationwide</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Feature Card -->
+                <div class="lg:col-span-5" data-aos="fade-left">
+                    <div class="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-6 shadow-2xl relative overflow-hidden group text-white">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                            <span class="text-xs font-mono text-brand-400 font-bold"><i class="fa-solid fa-graduation-cap mr-1"></i> GATE MT 2027 Program</span>
+                            <span class="text-[10px] bg-brand-900 text-brand-300 font-mono px-2.5 py-0.5 rounded-full border border-brand-700">Official Curriculum</span>
+                        </div>
+                        
+                        <div class="space-y-4 my-4">
+                            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-brand-600/20 text-brand-400 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-white">8 Full Syllabus Sections</h4>
+                                    <p class="text-xs text-slate-400">100% covered from Fundamentals to GATE Level</p>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-white">AIR 1 Tested Strategy</h4>
+                                    <p class="text-xs text-slate-400">Concept-wise problem sets & past 30 yr solutions</p>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                                    <i class="fa-solid fa-laptop-code"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-white">TCS iON Test Simulator</h4>
+                                    <p class="text-xs text-slate-400">Real virtual calculator & test interface</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="#syllabus-slider" class="w-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 mt-4 shadow-lg">
+                            <i class="fa-solid fa-sliders"></i> Launch Interactive Syllabus Slider
+                        </a>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <a href="#contact" class="btn-secondary" style="text-align: center;">View Module</a>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Technical Articles Section -->
-  <section id="blog" class="section-container" style="background: rgba(0,0,0,0.2); border-radius: 24px;">
-    <div class="section-header">
-      <h2 class="section-title">Featured Technical Insights</h2>
-      <p style="color: var(--text-muted)">Mathematical formulations and engineering breakdowns</p>
-    </div>
-    <div class="card-grid">
-      <div class="glass-card">
-        <div>
-          <span style="color: var(--accent-cyan); font-size: 0.85rem; font-weight: 600;">METALLURGICAL THERMODYNAMICS</span>
-          <h3 class="card-title" style="margin-top: 0.6rem;">FCC vs BCC Phase Transformation Kinetics</h3>
-          <p class="card-text">Analyzing interstitial void geometries and Gibbs free energy: $\Delta G_v \approx \frac{\Delta H_v \cdot \Delta T}{T_0}$.</p>
+    <!-- GATE 2027 & 2028 EXAM COUNTDOWN SECTION -->
+    <section id="countdown" class="py-16 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 border-y border-slate-800 text-white relative z-10 overflow-hidden">
+        <div class="absolute inset-0 bg-dark-grid bg-[length:32px_32px] opacity-30"></div>
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="max-w-5xl mx-auto bg-slate-950/90 border-2 border-brand-500/40 rounded-[2.5rem] p-6 sm:p-10 shadow-[0_0_50px_rgba(37,99,235,0.2)] backdrop-blur-xl relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-brand-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider mb-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Live Exam Clock
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-heading font-extrabold tracking-tight">
+                            GATE MT <span class="text-gradient-gold" id="targetExamLabel">2027</span> Official Countdown
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">Organizing Institute: <span class="text-white font-bold">IIT Madras</span> • Standard February Slot</p>
+                    </div>
+
+                    <!-- Target Exam Toggle Switch -->
+                    <div class="flex items-center bg-slate-900 p-1.5 rounded-2xl border border-slate-800 gap-1">
+                        <button id="btnExam2027" onclick="setCountdownTarget('2027')" class="px-5 py-2.5 rounded-xl text-xs font-mono font-extrabold transition-all bg-brand-600 text-white shadow-lg">
+                            GATE 2027 (Feb 6)
+                        </button>
+                        <button id="btnExam2028" onclick="setCountdownTarget('2028')" class="px-5 py-2.5 rounded-xl text-xs font-mono font-extrabold transition-all text-slate-400 hover:text-white">
+                            GATE 2028 (Feb 5)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Clock Display Boxes -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8 text-center">
+                    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-5 rounded-2xl relative group hover:border-brand-500/60 transition">
+                        <span id="cdDays" class="text-4xl sm:text-6xl font-mono font-black text-brand-400 tracking-tight leading-none">00</span>
+                        <span class="block text-[11px] font-mono uppercase text-slate-400 font-bold mt-2">Days Left</span>
+                    </div>
+                    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-5 rounded-2xl relative group hover:border-brand-500/60 transition">
+                        <span id="cdHours" class="text-4xl sm:text-6xl font-mono font-black text-amber-400 tracking-tight leading-none">00</span>
+                        <span class="block text-[11px] font-mono uppercase text-slate-400 font-bold mt-2">Hours</span>
+                    </div>
+                    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-5 rounded-2xl relative group hover:border-brand-500/60 transition">
+                        <span id="cdMins" class="text-4xl sm:text-6xl font-mono font-black text-emerald-400 tracking-tight leading-none">00</span>
+                        <span class="block text-[11px] font-mono uppercase text-slate-400 font-bold mt-2">Minutes</span>
+                    </div>
+                    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-5 rounded-2xl relative group hover:border-brand-500/60 transition">
+                        <span id="cdSecs" class="text-4xl sm:text-6xl font-mono font-black text-rose-400 tracking-tight leading-none">00</span>
+                        <span class="block text-[11px] font-mono uppercase text-slate-400 font-bold mt-2">Seconds</span>
+                    </div>
+                </div>
+
+                <!-- Preparation Timeline Milestones -->
+                <div class="pt-6 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 text-xs text-slate-300 font-mono">
+                        <i class="fa-solid fa-flag-checkered text-amber-400"></i>
+                        <span>Recommended Phase: <strong class="text-emerald-400">Phase 1 - Fundamental Concept Building</strong></span>
+                    </div>
+                    <button onclick="openModal('scheduleModal')" class="bg-slate-900 hover:bg-brand-600 text-white border border-slate-700 text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-check text-amber-400"></i> Generate Study Roadmap
+                    </button>
+                </div>
+            </div>
         </div>
-        <a href="#contact" class="btn-secondary" style="text-align: center;">Read Article</a>
-      </div>
-      <div class="glass-card">
-        <div>
-          <span style="color: var(--accent-cyan); font-size: 0.85rem; font-weight: 600;">EXAM BLUEPRINT</span>
-          <h3 class="card-title" style="margin-top: 0.6rem;">GATE MT & XE High-Yield Strategy</h3>
-          <p class="card-text">Past paper weightage distribution, scoring strategies, and numerical evaluation benchmarks.</p>
+    </section>
+
+    <!-- OFFICIAL GATE 2027 IMPORTANT DATES & TIMELINE (IIT MADRAS) -->
+    <section id="gate-dates" class="py-20 bg-slate-900 text-white relative z-10 border-b border-slate-800">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block py-1 px-4 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-mono uppercase tracking-widest border border-indigo-500/30 mb-3">
+                    Organizing Institute: IIT Madras
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold tracking-tight">
+                    GATE 2027 <span class="text-gradient-gold">Official Exam Calendar</span>
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl mx-auto">
+                    Track crucial registration windows, admit card releases, and exam dates for Metallurgical Engineering (MT).
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+                <!-- Date Card 1 -->
+                <div class="bg-slate-950/90 border border-slate-800 rounded-3xl p-6 relative group hover:border-brand-500 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[10px] font-mono font-bold bg-brand-900/60 text-brand-300 px-3 py-1 rounded-full border border-brand-700">AUGUST 2026</span>
+                        <div class="w-10 h-10 rounded-xl bg-brand-600/20 text-brand-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-bullhorn"></i></div>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-white mb-2">Notification Release</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Official GATE 2027 brochure & eligibility criteria released on GOAPS portal.</p>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-[11px] text-emerald-400 font-mono font-bold">
+                        <i class="fa-solid fa-circle-check mr-1.5"></i> Status: Upcoming
+                    </div>
+                </div>
+
+                <!-- Date Card 2 -->
+                <div class="bg-slate-950/90 border border-slate-800 rounded-3xl p-6 relative group hover:border-amber-500 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[10px] font-mono font-bold bg-amber-900/60 text-amber-300 px-3 py-1 rounded-full border border-amber-700">SEP - OCT 2026</span>
+                        <div class="w-10 h-10 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-pen-to-square"></i></div>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-white mb-2">GOAPS Application Window</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Online application submission begins. Extended late fee window available till mid-October.</p>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-[11px] text-amber-400 font-mono font-bold">
+                        <i class="fa-solid fa-clock mr-1.5"></i> Key Action Phase
+                    </div>
+                </div>
+
+                <!-- Date Card 3 -->
+                <div class="bg-slate-950/90 border border-slate-800 rounded-3xl p-6 relative group hover:border-purple-500 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[10px] font-mono font-bold bg-purple-900/60 text-purple-300 px-3 py-1 rounded-full border border-purple-700">JANUARY 2027</span>
+                        <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-id-card"></i></div>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-white mb-2">Admit Card Download</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Admit cards available for download on the official IIT Madras GATE portal.</p>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-[11px] text-purple-400 font-mono font-bold">
+                        <i class="fa-solid fa-download mr-1.5"></i> Online Verification
+                    </div>
+                </div>
+
+                <!-- Date Card 4 -->
+                <div class="bg-slate-950/90 border border-slate-800 rounded-3xl p-6 relative group hover:border-rose-500 transition-all duration-300 shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[10px] font-mono font-bold bg-rose-900/60 text-rose-300 px-3 py-1 rounded-full border border-rose-700">FEB 6 - 14, 2027</span>
+                        <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-award"></i></div>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-white mb-2">GATE MT Exam Days</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">Metallurgical Engineering Paper scheduled in designated CBT exam centers nationwide.</p>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-[11px] text-rose-400 font-mono font-bold">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Target Examination
+                    </div>
+                </div>
+            </div>
         </div>
-        <a href="#contact" class="btn-secondary" style="text-align: center;">Read Article</a>
-      </div>
+    </section>
+
+    <!-- DYNAMIC 8-SECTION GATE MT SYLLABUS SLIDER & BANNER SECTION -->
+    <section id="syllabus-slider" class="py-20 bg-slate-950 text-white relative overflow-hidden z-10 border-y border-slate-800">
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            
+            <!-- Section Title & Intro -->
+            <div class="text-center mb-10" data-aos="fade-up">
+                <span class="inline-block py-1 px-4 rounded-full bg-brand-500/10 text-brand-400 text-xs font-mono uppercase tracking-widest border border-brand-500/30 mb-3">
+                    IIT Madras Official Curriculum
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold tracking-tight">
+                    GATE MT <span class="text-gradient-gold">8-Section Syllabus Showcase</span>
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl mx-auto">
+                    Slide through the complete 8 sections of Metallurgical Engineering with dynamic graphic illustrations, weightage insights, and formula highlights.
+                </p>
+            </div>
+
+            <!-- Quick Jump Section Tab Filters (Sections 1 to 8) -->
+            <div class="flex items-center justify-start lg:justify-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none" id="section-tabs-bar">
+                <button onclick="goToSyllabusSlide(0)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-brand-600 text-white shadow-lg transition">Sec 1: Maths</button>
+                <button onclick="goToSyllabusSlide(1)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 2: Thermo</button>
+                <button onclick="goToSyllabusSlide(2)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 3: Transport</button>
+                <button onclick="goToSyllabusSlide(3)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 4: Extractive</button>
+                <button onclick="goToSyllabusSlide(4)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 5: Physical Met</button>
+                <button onclick="goToSyllabusSlide(5)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 6: Mechanical</button>
+                <button onclick="goToSyllabusSlide(6)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 7: Manufacturing</button>
+                <button onclick="goToSyllabusSlide(7)" class="syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition">Sec 8: Materials Sci</button>
+            </div>
+
+            <!-- Dynamic Slider Box -->
+            <div class="relative bg-slate-900/90 border border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl group min-h-[520px] flex flex-col justify-between" id="syllabus-slider-box">
+                
+                <!-- Main Slider Container -->
+                <div id="syllabus-slides-wrapper" class="flex transition-transform duration-700 ease-in-out w-full h-full">
+                    
+                    <!-- Slide 1: Engineering Mathematics -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 1 • Engineering Maths</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~13 - 15 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Engineering Mathematics</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Linear Algebra (Matrices, Eigenvalues), Calculus (Fourier series & transforms), Vector Calculus (Gauss Theorem), ODEs & PDEs, Probability & Statistics, and Numerical Methods (Newton-Raphson).
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Eigenvalues</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Gauss Theorem</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Poisson Dist.</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Newton-Raphson</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 1 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-indigo-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-indigo-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>DYNAMIC VECTOR FIELD</span>
+                                        <i class="fa-solid fa-square-root-variable text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <defs>
+                                            <linearGradient id="mathGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#6366f1" />
+                                                <stop offset="100%" stop-color="#a855f7" />
+                                            </linearGradient>
+                                        </defs>
+                                        <!-- Fourier Wave Animation -->
+                                        <path d="M 10,60 Q 40,10 70,60 T 130,60 T 190,60" fill="none" stroke="url(#mathGrad)" stroke-width="3" class="animate-pulse" />
+                                        <path d="M 10,60 Q 40,110 70,60 T 130,60 T 190,60" fill="none" stroke="#818cf8" stroke-dasharray="2 2" stroke-width="1.5" />
+                                        <!-- Matrix Grid Lines -->
+                                        <circle cx="70" cy="60" r="5" fill="#facc15" />
+                                        <circle cx="130" cy="60" r="5" fill="#38bdf8" />
+                                        <text x="75" y="55" fill="#fff" font-size="8" font-family="monospace">det(A-λI)=0</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-indigo-300">|A - λI| = 0</code></span>
+                            <a href="#courses" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Metallurgical Thermodynamics -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 2 • Core Metallurgy</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~12 - 15 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Metallurgical Thermodynamics</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Laws of Thermodynamics, Free Energy, Maxwell's Relations, Ideal & Regular Solutions, Binary Phase Diagrams, Lever Rule, Ellingham Diagrams, and Electrochemical Potential-pH (Pourbaix) diagrams.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Ellingham Diagram</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Gibbs Phase Rule</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Nernst Eq.</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 2 (Ellingham Plot) -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-amber-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-amber-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>ELLINGHAM FREE ENERGY PLOT</span>
+                                        <i class="fa-solid fa-fire text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <line x1="20" y1="10" x2="20" y2="100" stroke="#475569" stroke-width="2" />
+                                        <line x1="20" y1="100" x2="190" y2="100" stroke="#475569" stroke-width="2" />
+                                        <text x="10" y="20" fill="#cbd5e1" font-size="7" font-family="monospace">ΔG°</text>
+                                        <text x="170" y="112" fill="#cbd5e1" font-size="7" font-family="monospace">Temp T</text>
+                                        <line x1="20" y1="90" x2="180" y2="30" stroke="#facc15" stroke-width="2.5" />
+                                        <line x1="20" y1="70" x2="180" y2="20" stroke="#f97316" stroke-width="2" />
+                                        <line x1="20" y1="95" x2="180" y2="60" stroke="#38bdf8" stroke-width="2" />
+                                        <circle cx="100" cy="60" r="4" fill="#ef4444" class="animate-ping" />
+                                        <text x="105" y="55" fill="#facc15" font-size="7" font-family="monospace">2CO + O2 = 2CO2</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-amber-300">ΔG° = -RT ln(K)</code></span>
+                            <a href="#courses" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Transport Phenomena -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 3 • Transport & Kinetics</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~10 - 12 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Transport Phenomena & Rate Processes</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Momentum Transfer (Viscosity, Bernoulli's equation), Heat Transfer (Fourier's law, radiation), Mass Transfer (Fick's 1st & 2nd Laws), Dimensional Analysis, and Chemical Kinetics.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Fourier's Law</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Fick's Diffusion</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Reynolds No.</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 3 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-cyan-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-cyan-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>FLUID VELOCITY BOUNDARY LAYER</span>
+                                        <i class="fa-solid fa-wind text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <rect x="20" y="100" width="160" height="6" fill="#475569" />
+                                        <path d="M 20,100 C 60,80 100,30 180,20" fill="none" stroke="#22d3ee" stroke-width="2" />
+                                        <line x1="40" y1="100" x2="40" y2="85" stroke="#38bdf8" stroke-width="1.5" />
+                                        <line x1="80" y1="100" x2="80" y2="55" stroke="#38bdf8" stroke-width="1.5" />
+                                        <line x1="120" y1="100" x2="120" y2="32" stroke="#38bdf8" stroke-width="1.5" />
+                                        <line x1="160" y1="100" x2="160" y2="22" stroke="#38bdf8" stroke-width="1.5" />
+                                        <text x="60" y="20" fill="#22d3ee" font-size="8" font-family="monospace">v(y) Profile</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-cyan-300">J = -D (∂C/∂x)</code></span>
+                            <a href="#courses" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4: Mineral Processing & Extractive Metallurgy -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 4 • Industrial Extractive</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~14 - 16 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Extractive Metallurgy & Ironmaking</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Mineral Beneficiation (Flotation), Extraction of Al, Cu, Zn, Blast Furnace Ironmaking (MIDREX, COREX), BOF/EAF Primary Steelmaking, and Continuous Casting.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Blast Furnace</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">BOF Converter</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Froth Flotation</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 4 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-emerald-500/30 rounded-2xl p-4 shadow-xl text-center">
+                                    <div class="text-[10px] font-mono text-emerald-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>BLAST FURNACE SCHEMATIC</span>
+                                        <i class="fa-solid fa-industry text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <polygon points="60,10 140,10 160,80 150,110 50,110 40,80" fill="none" stroke="#10b981" stroke-width="2" />
+                                        <circle cx="100" cy="100" r="12" fill="#ef4444" class="animate-pulse" />
+                                        <text x="75" y="103" fill="#ffffff" font-size="7" font-family="monospace">1500°C Liquid Fe</text>
+                                        <line x1="30" y1="80" x2="60" y2="80" stroke="#f59e0b" stroke-width="3" />
+                                        <line x1="170" y1="80" x2="140" y2="80" stroke="#f59e0b" stroke-width="3" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Focus: <code class="text-emerald-300">C + O2 → CO2 & CO Reduction</code></span>
+                            <a href="#courses" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5: Physical Metallurgy -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-blue-500/20 text-blue-300 border border-blue-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 5 • Highest Weightage</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~18 - 22 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Physical Metallurgy</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Characterisation (XRD Bragg's law, SEM), Defects, Solidification, Phase Transformations (TTT/CCT diagrams, Martensitic, Heat treatment of steel), and Corrosion.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">XRD Bragg's Law</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Fe-Fe3C Diagram</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">TTT & CCT Curves</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 5 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-blue-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-blue-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>XRD BRAGG DIFFRACTION PEAKS</span>
+                                        <i class="fa-solid fa-atom text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <line x1="10" y1="100" x2="190" y2="100" stroke="#475569" stroke-width="2" />
+                                        <path d="M 20,100 L 50,100 L 60,20 L 70,100 L 110,100 L 120,40 L 130,100 L 170,100 L 175,70 L 180,100" fill="none" stroke="#60a5fa" stroke-width="2.5" />
+                                        <circle cx="60" cy="20" r="3" fill="#facc15" />
+                                        <text x="65" y="18" fill="#facc15" font-size="7" font-family="monospace">(110) Peak</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-blue-300">λ = 2d sin(θ)</code></span>
+                            <a href="#courses" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 6: Mechanical Behaviour of Materials -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-purple-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 6 • Mechanics & Dislocations</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~15 - 18 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Mechanical Behaviour of Materials</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Stress Tensor & Mohr's Circle, Tresca & Von Mises Yield Criteria, Dislocation Theory, Hall-Petch Strengthening, LEFM Fracture, Fatigue, and High-Temp Creep.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Mohr's Circle</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Hall-Petch Relation</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Griffith Theory</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 6 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-purple-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-purple-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>MOHR'S CIRCLE STRESS STATE</span>
+                                        <i class="fa-solid fa-compress text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <line x1="10" y1="60" x2="190" y2="60" stroke="#475569" stroke-width="1.5" />
+                                        <line x1="100" y1="10" x2="100" y2="110" stroke="#475569" stroke-width="1.5" />
+                                        <circle cx="110" cy="60" r="35" fill="none" stroke="#c084fc" stroke-width="2.5" />
+                                        <circle cx="145" cy="60" r="3" fill="#facc15" />
+                                        <text x="148" y="55" fill="#facc15" font-size="7" font-family="monospace">σ1</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-purple-300">σ_y = σ_0 + k_y d^(-1/2)</code></span>
+                            <a href="#courses" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 7: Manufacturing Processes -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 7 • Manufacturing & NDT</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~12 - 14 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Manufacturing Processes</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Metal Casting (Chvorinov's rule), Rolling, Forging, Extrusion, Wire Drawing, Welding Metallurgy, Powder Metallurgy, and Non-Destructive Testing (Ultrasonic, Dye Penetrant).
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Chvorinov's Rule</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Welding HAZ</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Ultrasonic NDT</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 7 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-rose-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-rose-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>CASTING GATING & RISER SYSTEM</span>
+                                        <i class="fa-solid fa-cube text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <rect x="20" y="20" width="160" height="80" fill="none" stroke="#fb7185" stroke-width="2" />
+                                        <rect x="70" y="50" width="60" height="30" fill="#f43f5e" opacity="0.6" />
+                                        <path d="M 40,20 L 40,80 L 70,80" fill="none" stroke="#facc15" stroke-width="3" />
+                                        <text x="75" y="68" fill="#ffffff" font-size="7" font-family="monospace">Mold Cavity</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-rose-300">t_s = B (V/A)^2</code></span>
+                            <a href="#courses" class="bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Slide 8: Materials Science -->
+                    <div class="min-w-full p-6 sm:p-10 bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 flex flex-col justify-between">
+                        <div class="grid lg:grid-cols-12 gap-8 items-center">
+                            <div class="lg:col-span-7">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <span class="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-xs font-mono px-3.5 py-1 rounded-full uppercase tracking-wider font-bold">Section 8 • Advanced Materials</span>
+                                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-mono px-3 py-1 rounded-full font-bold">~8 - 10 Marks</span>
+                                </div>
+                                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Materials Science & Non-Metallics</h3>
+                                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">
+                                    Polymers (Thermographics, Crystallinity), Ceramics (Radius ratio, Schottky/Frenkel defects), Composites (Isostrain/Isostress loading), Electronic Band Gaps, and Magnetic B-H Loops.
+                                </p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Schottky Defect</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">Isostrain Modulus</span>
+                                    <span class="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg font-mono">B-H Loop</span>
+                                </div>
+                            </div>
+                            <!-- Dynamic SVG Graphic Illustration 8 -->
+                            <div class="lg:col-span-5 flex justify-center">
+                                <div class="w-full max-w-[280px] bg-slate-950/80 border border-teal-500/30 rounded-2xl p-4 shadow-xl">
+                                    <div class="text-[10px] font-mono text-teal-400 font-bold mb-2 flex items-center justify-between">
+                                        <span>ELECTRONIC BAND GAP STRUCTURE</span>
+                                        <i class="fa-solid fa-bolt text-xs"></i>
+                                    </div>
+                                    <svg viewBox="0 0 200 120" class="w-full h-auto">
+                                        <rect x="20" y="20" width="160" height="25" fill="#14b8a6" opacity="0.6" />
+                                        <text x="60" y="36" fill="#ffffff" font-size="8" font-family="monospace">Conduction Band</text>
+                                        <rect x="20" y="75" width="160" height="25" fill="#0d9488" opacity="0.8" />
+                                        <text x="65" y="91" fill="#ffffff" font-size="8" font-family="monospace">Valence Band</text>
+                                        <text x="80" y="58" fill="#facc15" font-size="8" font-family="monospace">Band Gap Eg</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 mt-4">
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-lightbulb text-amber-400 mr-1.5"></i> Key Formula: <code class="text-teal-300">E_c = E_f V_f + E_m V_m</code></span>
+                            <a href="#courses" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-lg">Study Module &rarr;</a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Slider Arrow Controls -->
+                <button onclick="prevSyllabusSlide()" aria-label="Previous Slide" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/80 border border-slate-700 text-white flex items-center justify-center hover:bg-brand-600 hover:border-brand-500 transition shadow-xl z-20">
+                    <i class="fa-solid fa-chevron-left text-sm"></i>
+                </button>
+                <button onclick="nextSyllabusSlide()" aria-label="Next Slide" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/80 border border-slate-700 text-white flex items-center justify-center hover:bg-brand-600 hover:border-brand-500 transition shadow-xl z-20">
+                    <i class="fa-solid fa-chevron-right text-sm"></i>
+                </button>
+
+                <!-- Slider Pagination Indicators -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20" id="syl-dots-container">
+                    <button onclick="goToSyllabusSlide(0)" class="syl-dot w-8 h-2 rounded-full bg-brand-500 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(1)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(2)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(3)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(4)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(5)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(6)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                    <button onclick="goToSyllabusSlide(7)" class="syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all"></button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TCS iON EXACT REPLICA GATE EXAM QUESTION OF THE DAY (QOD) SIMULATOR -->
+    <section id="qod-simulator" class="py-20 bg-slate-950 text-white relative z-10 border-b border-slate-800">
+        <div class="container mx-auto px-4 sm:px-6">
+            
+            <div class="text-center mb-10" data-aos="fade-up">
+                <span class="inline-block py-1 px-4 rounded-full bg-rose-500/10 text-rose-400 text-xs font-mono uppercase tracking-widest border border-rose-500/30 mb-3">
+                    Daily GATE Challenge
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold tracking-tight">
+                    TCS iON Exam Simulator <span class="text-gradient-gold">Question of the Day</span>
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl mx-auto">
+                    Experience the exact official TCS iON GATE CBT interface, complete with Question Palette, Virtual Calculator, and detailed metallurgical derivations.
+                </p>
+            </div>
+
+            <!-- TCS iON Simulator Wrapper Container -->
+            <div class="max-w-6xl mx-auto bg-slate-900 rounded-3xl border-2 border-slate-700 shadow-2xl overflow-hidden font-sans">
+                
+                <!-- TCS iON Top Header Bar -->
+                <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex flex-wrap items-center justify-between gap-4 text-xs">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-brand-600 text-white px-3 py-1 rounded font-mono font-bold">GATE 2027 MT</div>
+                        <span class="font-bold text-slate-200">Metallurgical Engineering • Daily QOD</span>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <button onclick="openModal('calcModal')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm text-xs">
+                            <i class="fa-solid fa-calculator"></i> Virtual Calculator
+                        </button>
+                        <div class="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-700 font-mono text-emerald-400 font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-clock animate-pulse text-amber-400"></i>
+                            <span>Time Left: <strong id="qodTimer">02:45</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TCS iON Main Workspace Split Layout -->
+                <div class="grid lg:grid-cols-12 min-h-[480px]">
+                    
+                    <!-- Left: Question & Options Display Panel (8 Cols) -->
+                    <div class="lg:col-span-8 p-6 bg-slate-950 border-r border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <!-- Question Info Row -->
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4 text-xs font-mono">
+                                <span class="bg-slate-800 text-brand-300 px-3 py-1 rounded font-bold">Question No. 1</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-slate-400">Type: <strong class="text-white">MCQ (Multiple Choice)</strong></span>
+                                    <span class="text-slate-400">Marks: <strong class="text-emerald-400">+2.0</strong> / <strong class="text-rose-400">-0.66</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Question Text -->
+                            <div class="text-sm sm:text-base text-slate-200 leading-relaxed font-medium mb-6">
+                                <p class="mb-3">
+                                    At <strong class="text-amber-300">1000 K</strong>, the standard Gibbs free energy of formation for titanium dioxide ($\text{TiO}_2$) reaction:
+                                </p>
+                                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl font-mono text-center text-brand-300 text-xs sm:text-sm my-3">
+                                    \text{Ti (s)} + \text{O}_2 \text{ (g)} \rightarrow \text{TiO}_2 \text{ (s)}, \quad \Delta G^\circ = -730,000 \text{ J/mol}
+                                </div>
+                                <p>
+                                    Calculate the equilibrium oxygen partial pressure ($P_{\text{O}_2}$) required for the dissociation of $\text{TiO}_2$ at $1000\text{ K}$. (Universal gas constant $R = 8.314\text{ J/mol}\cdot\text{K}$).
+                                </p>
+                            </div>
+
+                            <!-- Options List -->
+                            <div class="space-y-3" id="qodOptions">
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900 border border-slate-800 rounded-xl hover:border-brand-500 cursor-pointer transition">
+                                    <input type="radio" name="qod" value="A" class="w-4 h-4 text-brand-600 focus:ring-0 bg-slate-800 border-slate-700">
+                                    <span class="text-xs sm:text-sm text-slate-300"><strong class="text-white mr-2">A)</strong> 1.25 × 10⁻³⁸ atm</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900 border border-slate-800 rounded-xl hover:border-brand-500 cursor-pointer transition">
+                                    <input type="radio" name="qod" value="B" class="w-4 h-4 text-brand-600 focus:ring-0 bg-slate-800 border-slate-700">
+                                    <span class="text-xs sm:text-sm text-slate-300"><strong class="text-white mr-2">B)</strong> 7.85 × 10⁻³⁹ atm</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900 border border-slate-800 rounded-xl hover:border-brand-500 cursor-pointer transition">
+                                    <input type="radio" name="qod" value="C" class="w-4 h-4 text-brand-600 focus:ring-0 bg-slate-800 border-slate-700">
+                                    <span class="text-xs sm:text-sm text-slate-300"><strong class="text-white mr-2">C)</strong> 2.14 × 10⁻³⁵ atm</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3.5 bg-slate-900 border border-slate-800 rounded-xl hover:border-brand-500 cursor-pointer transition">
+                                    <input type="radio" name="qod" value="D" class="w-4 h-4 text-brand-600 focus:ring-0 bg-slate-800 border-slate-700">
+                                    <span class="text-xs sm:text-sm text-slate-300"><strong class="text-white mr-2">D)</strong> 4.10 × 10⁻⁴² atm</span>
+                                </label>
+                            </div>
+
+                            <!-- Detailed Solution Box (Hidden initially) -->
+                            <div id="qodSolution" class="hidden mt-6 p-4 bg-slate-900 border-2 border-emerald-500/50 rounded-2xl">
+                                <div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-2">
+                                    <span class="text-xs font-mono font-bold text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> CORRECT ANSWER: OPTION B</span>
+                                    <span class="text-[10px] bg-emerald-900 text-emerald-300 px-2 py-0.5 rounded font-mono">+2.0 Marks</span>
+                                </div>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    <strong>Thermodynamic Derivation:</strong><br>
+                                    At equilibrium: ΔG° = -RT ln K = RT ln(P_O2)<br>
+                                    ln(P_O2) = ΔG° / (RT) = -730000 / (8.314 × 1000) = -87.803<br>
+                                    P_O2 = e^(-87.803) ≈ <strong>7.85 × 10⁻³⁹ atm</strong>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Bar Bottom Buttons -->
+                        <div class="pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 mt-6">
+                            <div class="flex gap-2">
+                                <button onclick="qodMarkReview()" class="bg-purple-900/60 hover:bg-purple-800 text-purple-300 border border-purple-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                                    Mark for Review
+                                </button>
+                                <button onclick="qodClear()" class="bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                                    Clear Response
+                                </button>
+                            </div>
+                            <button onclick="qodSubmit()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition shadow-lg flex items-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> Submit & View Solution
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: TCS iON Question Palette & Status Legend (4 Cols) -->
+                    <div class="lg:col-span-4 p-6 bg-slate-900 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 pb-4 border-b border-slate-800 mb-4">
+                                <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 text-brand-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-user-graduate text-base"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-white">GATE MT Aspirant</h4>
+                                    <p class="text-[10px] text-slate-400 font-mono">Roll: 2027MT8812</p>
+                                </div>
+                            </div>
+
+                            <!-- Legend Symbols -->
+                            <p class="text-[11px] font-mono text-slate-400 font-bold uppercase mb-3">Question Palette Legend</p>
+                            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono mb-6">
+                                <div class="flex items-center gap-2"><span id="legAns" class="w-5 h-5 bg-emerald-600 rounded flex items-center justify-center text-white font-bold">0</span> <span>Answered</span></div>
+                                <div class="flex items-center gap-2"><span id="legNotAns" class="w-5 h-5 bg-rose-600 rounded flex items-center justify-center text-white font-bold">1</span> <span>Not Answered</span></div>
+                                <div class="flex items-center gap-2"><span id="legRev" class="w-5 h-5 bg-purple-600 rounded flex items-center justify-center text-white font-bold">0</span> <span>Marked Review</span></div>
+                                <div class="flex items-center gap-2"><span id="legNotVis" class="w-5 h-5 bg-slate-800 border border-slate-700 rounded flex items-center justify-center text-slate-400 font-bold">4</span> <span>Not Visited</span></div>
+                            </div>
+
+                            <!-- Palette Numbers Grid -->
+                            <p class="text-[11px] font-mono text-slate-400 font-bold uppercase mb-2">Choose Question</p>
+                            <div class="grid grid-cols-5 gap-2 text-xs font-mono font-bold">
+                                <button class="w-9 h-9 bg-rose-600 text-white rounded-lg border border-rose-500 flex items-center justify-center" id="qBtn1">1</button>
+                                <button class="w-9 h-9 bg-slate-800 text-slate-400 rounded-lg border border-slate-700 flex items-center justify-center hover:bg-slate-700">2</button>
+                                <button class="w-9 h-9 bg-slate-800 text-slate-400 rounded-lg border border-slate-700 flex items-center justify-center hover:bg-slate-700">3</button>
+                                <button class="w-9 h-9 bg-slate-800 text-slate-400 rounded-lg border border-slate-700 flex items-center justify-center hover:bg-slate-700">4</button>
+                                <button class="w-9 h-9 bg-slate-800 text-slate-400 rounded-lg border border-slate-700 flex items-center justify-center hover:bg-slate-700">5</button>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800/80">
+                            <a href="#courses" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-extrabold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-list-check"></i> Unlock 60+ Full Mock Tests
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unified Hall of Fame (Legacy + Rankers) -->
+    <section id="legacy" class="py-24 bg-slate-950 relative overflow-hidden text-white z-10">
+        <div class="absolute inset-0 bg-dark-grid bg-[length:30px_30px] opacity-20"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block py-1.5 px-5 rounded-full bg-gold-500/10 text-gold-400 text-xs font-extrabold tracking-[0.25em] uppercase border border-gold-500/30 mb-4">
+                    Unrivaled Record
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold mb-5 leading-tight">
+                    Dominating <span class="text-gradient-gold">AIR 1</span> <br>
+                    6 Consecutive Years (2019 - 2024)
+                </h2>
+                <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto font-medium">Results don't happen by chance. Our targeted metallurgy pedagogy produces top ranks consistently.</p>
+            </div>
+
+            <!-- Legacy Cards Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mb-20">
+                <!-- 2019 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="50">
+                    <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center transition-all duration-300 hover:border-gold-500/60 hover:-translate-y-2">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 border border-gold-500/50 text-gold-400 px-3 py-0.5 rounded-full text-[10px] font-mono font-bold">2019</div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-gold-600 to-amber-300 mb-3 mt-2">
+                            <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80" class="w-full h-full rounded-full object-cover border-2 border-slate-900" alt="AIR 1 2019">
+                        </div>
+                        <h3 class="font-bold text-sm text-white truncate">Arjun Mehta</h3>
+                        <p class="text-[11px] text-slate-400">IIT Bombay</p>
+                        <div class="mt-2 inline-block bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">AIR 1</div>
+                    </div>
+                </div>
+
+                <!-- 2020 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center transition-all duration-300 hover:border-gold-500/60 hover:-translate-y-2">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 border border-gold-500/50 text-gold-400 px-3 py-0.5 rounded-full text-[10px] font-mono font-bold">2020</div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-gold-600 to-amber-300 mb-3 mt-2">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80" class="w-full h-full rounded-full object-cover border-2 border-slate-900" alt="AIR 1 2020">
+                        </div>
+                        <h3 class="font-bold text-sm text-white truncate">Kavya Sharma</h3>
+                        <p class="text-[11px] text-slate-400">IIT Kanpur</p>
+                        <div class="mt-2 inline-block bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">AIR 1</div>
+                    </div>
+                </div>
+
+                <!-- 2021 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="150">
+                    <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center transition-all duration-300 hover:border-gold-500/60 hover:-translate-y-2">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 border border-gold-500/50 text-gold-400 px-3 py-0.5 rounded-full text-[10px] font-mono font-bold">2021</div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-gold-600 to-amber-300 mb-3 mt-2">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" class="w-full h-full rounded-full object-cover border-2 border-slate-900" alt="AIR 1 2021">
+                        </div>
+                        <h3 class="font-bold text-sm text-white truncate">Rohan Deshmukh</h3>
+                        <p class="text-[11px] text-slate-400">IIT Madras</p>
+                        <div class="mt-2 inline-block bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">AIR 1</div>
+                    </div>
+                </div>
+
+                <!-- 2022 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="200">
+                    <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center transition-all duration-300 hover:border-gold-500/60 hover:-translate-y-2">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 border border-gold-500/50 text-gold-400 px-3 py-0.5 rounded-full text-[10px] font-mono font-bold">2022</div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-gold-600 to-amber-300 mb-3 mt-2">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80" class="w-full h-full rounded-full object-cover border-2 border-slate-900" alt="AIR 1 2022">
+                        </div>
+                        <h3 class="font-bold text-sm text-white truncate">Vikram Singh</h3>
+                        <p class="text-[11px] text-slate-400">IIT Kharagpur</p>
+                        <div class="mt-2 inline-block bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">AIR 1</div>
+                    </div>
+                </div>
+
+                <!-- 2023 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="250">
+                    <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center transition-all duration-300 hover:border-gold-500/60 hover:-translate-y-2">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 border border-gold-500/50 text-gold-400 px-3 py-0.5 rounded-full text-[10px] font-mono font-bold">2023</div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-gold-600 to-amber-300 mb-3 mt-2">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" class="w-full h-full rounded-full object-cover border-2 border-slate-900" alt="AIR 1 2023">
+                        </div>
+                        <h3 class="font-bold text-sm text-white truncate">Neha Gupta</h3>
+                        <p class="text-[11px] text-slate-400">IIT Roorkee</p>
+                        <div class="mt-2 inline-block bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">AIR 1</div>
+                    </div>
+                </div>
+
+                <!-- 2024 -->
+                <div class="group relative" data-aos="fade-up" data-aos-delay="300">
+                    <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center transition-all duration-300 hover:border-gold-500/60 hover:-translate-y-2">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 border border-gold-500/50 text-gold-400 px-3 py-0.5 rounded-full text-[10px] font-mono font-bold">2024</div>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full p-1 bg-gradient-to-tr from-gold-600 to-amber-300 mb-3 mt-2">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80" class="w-full h-full rounded-full object-cover border-2 border-slate-900" alt="AIR 1 2024">
+                        </div>
+                        <h3 class="font-bold text-sm text-white truncate">Siddharth Roy</h3>
+                        <p class="text-[11px] text-slate-400">IISc Bangalore</p>
+                        <div class="mt-2 inline-block bg-gold-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">AIR 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GATE 2025 Recent Result Showcase Box -->
+            <div class="bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 rounded-[2.5rem] p-8 md:p-12 border border-brand-500/30 relative overflow-hidden shadow-2xl">
+                <div class="grid lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-6">
+                        <div class="inline-block bg-brand-500/20 text-brand-300 text-xs font-mono px-3 py-1 rounded-md mb-4 border border-brand-500/40">Latest GATE Impact Report</div>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold mb-4 leading-tight">
+                            Over <span class="text-brand-400">45% of Top 100 Ranks</span> <br>Belong to TestUrSelf
+                        </h3>
+                        <p class="text-slate-300 text-sm sm:text-base mb-8 leading-relaxed">
+                            Our structured online live classes, rigorous test series, and Samarjeet Sir's personalized guidance ensure our students dominate the top merit list.
+                        </p>
+                        
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 text-center">
+                                <p class="text-2xl sm:text-3xl font-black text-gold-400 font-mono">AIR 1</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">GATE 2025</p>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 text-center">
+                                <p class="text-2xl sm:text-3xl font-black text-brand-400 font-mono">14+</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">In Top 30</p>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10 text-center">
+                                <p class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">48</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">In Top 100</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Featured Topper Cards Carousel -->
+                    <div class="lg:col-span-6 flex gap-4 overflow-x-auto pb-4 scrollbar-none">
+                        <!-- Topper Card 1 -->
+                        <div class="flex-shrink-0 w-64 bg-slate-900 border border-slate-800 rounded-2xl p-5 text-center relative group">
+                            <span class="absolute top-3 right-3 bg-gold-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded">AIR 1</span>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-brand-500 mb-3 shadow-md" alt="Rahul Kumar AIR 1">
+                            <h4 class="font-bold text-base text-white">Rahul Kumar</h4>
+                            <p class="text-xs text-brand-400 font-semibold mb-2">Marks: 88.33 / 100</p>
+                            <p class="text-[11px] text-slate-400 italic">"Samarjeet Sir's Thermodynamics notes were a total gamechanger for my preparation."</p>
+                        </div>
+
+                        <!-- Topper Card 2 -->
+                        <div class="flex-shrink-0 w-64 bg-slate-900 border border-slate-800 rounded-2xl p-5 text-center relative group">
+                            <span class="absolute top-3 right-3 bg-slate-200 text-slate-900 font-black text-[9px] px-2 py-0.5 rounded">AIR 3</span>
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-slate-600 mb-3 shadow-md" alt="Amit Verma AIR 3">
+                            <h4 class="font-bold text-base text-white">Amit Verma</h4>
+                            <p class="text-xs text-brand-400 font-semibold mb-2">Marks: 84.67 / 100</p>
+                            <p class="text-[11px] text-slate-400 italic">"The TestUrSelf Test Series exact replica of the GATE interface boosted my confidence!"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Student Tools: Rank Estimator Widget -->
+    <section id="tools" class="py-20 bg-slate-900 text-white relative z-10">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto bg-slate-950 border border-slate-800 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+                <div class="text-center mb-10">
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-mono px-4 py-1 rounded-full uppercase tracking-widest inline-block mb-3">
+                        Student Utility Widget
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-heading font-extrabold">GATE MT Score & Rank Predictor</h2>
+                    <p class="text-slate-400 text-sm sm:text-base mt-2">Enter your expected marks out of 100 to get instant rank projections and top institute eligibility.</p>
+                </div>
+
+                <div class="grid md:grid-cols-12 gap-8 items-center">
+                    <!-- Calculator Inputs -->
+                    <div class="md:col-span-6 space-y-5">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Expected Marks (Out of 100)</label>
+                            <input type="number" id="gateMarks" min="0" max="100" value="65" placeholder="e.g. 68" class="w-full bg-slate-900 border border-slate-700 text-white font-mono text-lg rounded-xl p-4 focus:outline-none focus:border-brand-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Select Student Category</label>
+                            <select id="studentCategory" class="w-full bg-slate-900 border border-slate-700 text-white font-sans text-sm rounded-xl p-4 focus:outline-none focus:border-brand-500 transition">
+                                <option value="GEN">General / EWS</option>
+                                <option value="OBC">OBC-NCL</option>
+                                <option value="SCST">SC / ST / PwD</option>
+                            </select>
+                        </div>
+
+                        <button onclick="calculateRank()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-4 rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Calculate Rank & Score
+                        </button>
+                    </div>
+
+                    <!-- Calculator Prediction Output Box -->
+                    <div class="md:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center space-y-4">
+                        <p class="text-xs text-slate-400 uppercase font-mono tracking-wider">Estimated Projection</p>
+                        
+                        <div class="grid grid-cols-2 gap-3 py-2 border-y border-slate-800">
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-mono">Predicted GATE Score</p>
+                                <p id="outScore" class="text-3xl font-mono font-black text-brand-400">720</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-mono">Estimated All India Rank</p>
+                                <p id="outRank" class="text-3xl font-mono font-black text-gold-400">AIR 35 - 55</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-[11px] text-slate-400 font-semibold mb-1">Eligible Opportunities:</p>
+                            <span id="outEligibility" class="inline-block bg-emerald-500/20 text-emerald-300 text-xs font-bold px-3 py-1.5 rounded-lg border border-emerald-500/30">
+                                IIT Bombay, IIT Madras M.Tech & BARC Shortlist
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Courses & Pricing Section -->
+    <section id="courses" class="py-24 bg-slate-50 z-10 relative">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-brand-600 font-extrabold text-xs uppercase tracking-widest bg-brand-50 px-4 py-1.5 rounded-full border border-brand-200">Tailored Metallurgy Programs</span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold text-slate-900 mt-4 mb-6">Master Metallurgy with Proven Courses</h2>
+                
+                <!-- Category Filter Tabs -->
+                <div class="flex flex-wrap justify-center gap-3" id="course-tabs">
+                    <button onclick="filterCourses('all')" class="course-tab-btn tab-active bg-white text-slate-700 border border-slate-200 font-bold px-6 py-2.5 rounded-xl text-sm transition">All Offerings</button>
+                    <button onclick="filterCourses('video')" class="course-tab-btn bg-white text-slate-700 border border-slate-200 font-bold px-6 py-2.5 rounded-xl text-sm transition">Video Courses</button>
+                    <button onclick="filterCourses('test')" class="course-tab-btn bg-white text-slate-700 border border-slate-200 font-bold px-6 py-2.5 rounded-xl text-sm transition">Test Series</button>
+                    <button onclick="filterCourses('study')" class="course-tab-btn bg-white text-slate-700 border border-slate-200 font-bold px-6 py-2.5 rounded-xl text-sm transition">Study Pack</button>
+                </div>
+            </div>
+
+            <!-- Course Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="coursesGrid">
+                
+                <!-- Card 1: Comprehensive Video Course -->
+                <div class="course-card video-card bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm card-perspective flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -top-3 -right-3 bg-brand-600 text-white text-[10px] font-black uppercase px-6 py-2 rotate-12 shadow-sm">Popular</div>
+                    <div>
+                        <span class="text-[10px] font-extrabold text-brand-600 bg-brand-50 px-3.5 py-1 rounded-full uppercase tracking-wider">Full Year Program</span>
+                        <h3 class="text-2xl font-extrabold text-slate-900 mt-4">GATE 2027 Complete Live + Recorded</h3>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-3 leading-relaxed">End-to-end syllabus coverage for GATE MT with live interactive doubt sessions by Samarjeet Sir.</p>
+                        
+                        <ul class="space-y-3 my-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-600"></i> 250+ Hours High Definition Lectures</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-600"></i> Full Test Series Included (Free)</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-600"></i> Hardcopy Practice Books Delivered</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-brand-600"></i> Personal WhatsApp Group Doubt Access</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline gap-2 mb-6 border-t border-slate-100 pt-4">
+                            <span class="text-3xl font-black text-slate-900">₹14,999</span>
+                            <span class="text-sm text-slate-400 line-through font-semibold">₹25,000</span>
+                            <span class="text-xs bg-red-100 text-red-600 font-bold px-2 py-0.5 rounded ml-auto">40% OFF</span>
+                        </div>
+                        <button onclick="enrollModal('GATE 2027 Complete Live', 14999)" class="w-full bg-slate-900 hover:bg-brand-600 text-white font-extrabold py-4 rounded-2xl transition shadow-lg text-sm">
+                            Enroll Securely Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Ultimate Test Series -->
+                <div class="course-card test-card bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm card-perspective flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-3.5 py-1 rounded-full uppercase tracking-wider">Test Series</span>
+                        <h3 class="text-2xl font-extrabold text-slate-900 mt-4">GATE MT National Test Series 2027</h3>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-3 leading-relaxed">Exact Replica of the TCS iON GATE Virtual Calculator and interface with detailed video solutions.</p>
+                        
+                        <ul class="space-y-3 my-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> 15 Full-Length Mock GATE Tests</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> 45 Subject & Topic Wise Tests</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> All India Rank & Analytics Dashboard</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> Step-by-Step Video Explanations</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline gap-2 mb-6 border-t border-slate-100 pt-4">
+                            <span class="text-3xl font-black text-slate-900">₹1,999</span>
+                            <span class="text-sm text-slate-400 line-through font-semibold">₹3,999</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded ml-auto">50% OFF</span>
+                        </div>
+                        <button onclick="enrollModal('GATE MT Test Series 2027', 1999)" class="w-full bg-slate-900 hover:bg-emerald-600 text-white font-extrabold py-4 rounded-2xl transition shadow-lg text-sm">
+                            Unlock Test Series
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Hardcopy Study Pack -->
+                <div class="course-card study-card bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm card-perspective flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-purple-600 bg-purple-50 px-3.5 py-1 rounded-full uppercase tracking-wider">Postal Pack</span>
+                        <h3 class="text-2xl font-extrabold text-slate-900 mt-4">Complete Metallurgy Book Pack</h3>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-3 leading-relaxed">Comprehensive 10 Volume printed material covering all theoretical and numerical concepts.</p>
+                        
+                        <ul class="space-y-3 my-6 text-sm text-slate-700">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-purple-600"></i> 10 Spiral Bound Printed Books</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-purple-600"></i> 2,500+ Solved GATE & PSU MCQs</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-purple-600"></i> Quick Formula Handbook Included</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-circle-check text-purple-600"></i> Free Courier Express Delivery</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline gap-2 mb-6 border-t border-slate-100 pt-4">
+                            <span class="text-3xl font-black text-slate-900">₹4,499</span>
+                            <span class="text-sm text-slate-400 line-through font-semibold">₹6,999</span>
+                            <span class="text-xs bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded ml-auto">Free Shipping</span>
+                        </div>
+                        <button onclick="enrollModal('Complete Metallurgy Books Pack', 4499)" class="w-full bg-slate-900 hover:bg-purple-600 text-white font-extrabold py-4 rounded-2xl transition shadow-lg text-sm">
+                            Order Hardcopy Books
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PSU Preparation Portal Section -->
+    <section id="psu" class="py-20 bg-slate-900 text-white relative z-10">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono px-4 py-1.5 rounded-full uppercase tracking-widest inline-block mb-3">
+                    Career Opportunities
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold">Public Sector Undertakings (PSUs)</h2>
+                <p class="text-slate-400 text-base max-w-2xl mx-auto mt-2">Crack direct recruitment interviews at India's top Navratna and Maharatna public enterprises.</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center hover:border-amber-500/50 transition">
+                    <div class="w-14 h-14 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center mx-auto text-2xl font-bold mb-4">
+                        <i class="fa-solid fa-atom"></i>
+                    </div>
+                    <h3 class="font-extrabold text-xl mb-1">BARC OCES</h3>
+                    <p class="text-xs text-slate-400 mb-4">Scientific Officer Grade C</p>
+                    <span class="text-[10px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-mono">GATE Score + Direct Exam</span>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center hover:border-brand-500/50 transition">
+                    <div class="w-14 h-14 bg-brand-500/10 text-brand-400 rounded-xl flex items-center justify-center mx-auto text-2xl font-bold mb-4">
+                        <i class="fa-solid fa-industry"></i>
+                    </div>
+                    <h3 class="font-extrabold text-xl mb-1">SAIL MT</h3>
+                    <p class="text-xs text-slate-400 mb-4">Management Trainee Technical</p>
+                    <span class="text-[10px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-mono">Direct GATE MT Score</span>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center hover:border-emerald-500/50 transition">
+                    <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center mx-auto text-2xl font-bold mb-4">
+                        <i class="fa-solid fa-fire-burner"></i>
+                    </div>
+                    <h3 class="font-extrabold text-xl mb-1">Vizag Steel (RINL)</h3>
+                    <p class="text-xs text-slate-400 mb-4">Management Trainee</p>
+                    <span class="text-[10px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-mono">Separate Written + Interview</span>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center hover:border-purple-500/50 transition">
+                    <div class="w-14 h-14 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center mx-auto text-2xl font-bold mb-4">
+                        <i class="fa-solid fa-oil-well"></i>
+                    </div>
+                    <h3 class="font-extrabold text-xl mb-1">IOCL & NMDC</h3>
+                    <p class="text-xs text-slate-400 mb-4">Executive Trainee</p>
+                    <span class="text-[10px] bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-mono">Top GATE MT Rankers</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METALLURGY INSIGHTS & TECHNICAL BLOGS SECTION -->
+    <section id="blogs" class="py-24 bg-slate-50 z-10 relative">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-indigo-600 font-extrabold text-xs uppercase tracking-widest bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-200">
+                    High-Yield Reading
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-heading font-extrabold text-slate-900 mt-4 mb-4">
+                    Metallurgy Insights & Exam Hacks
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
+                    Curated articles, formula cheat sheets, and topper strategy guides authored directly by Samarjeet Kumar Singh.
+                </p>
+
+                <!-- Blog Filter Tabs -->
+                <div class="flex flex-wrap justify-center gap-2 mt-8" id="blog-tabs">
+                    <button onclick="filterBlogs('all')" class="blog-tab-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-md">All Articles</button>
+                    <button onclick="filterBlogs('thermo')" class="blog-tab-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 border border-slate-200 hover:bg-slate-100">Thermodynamics</button>
+                    <button onclick="filterBlogs('physical')" class="blog-tab-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 border border-slate-200 hover:bg-slate-100">Physical Met</button>
+                    <button onclick="filterBlogs('extractive')" class="blog-tab-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 border border-slate-200 hover:bg-slate-100">Extractive & Ironmaking</button>
+                </div>
+            </div>
+
+            <!-- Blog Posts Grid -->
+            <div class="grid md:grid-cols-3 gap-8" id="blogGrid">
+                
+                <!-- Blog Card 1 -->
+                <div class="blog-card thermo-card bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-3 font-mono">
+                            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded">Thermodynamics</span>
+                            <span>5 Min Read</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 mb-2 hover:text-brand-600 cursor-pointer" onclick="openBlogModal(1)">
+                            Mastering Ellingham Diagrams in 3 Easy Steps
+                        </h3>
+                        <p class="text-slate-600 text-xs leading-relaxed mb-4">
+                            Learn how to calculate oxygen partial pressure thresholds and reduction potential for metals with simple graphical techniques.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-800">By Samarjeet Sir</span>
+                        <button onclick="openBlogModal(1)" class="text-xs font-extrabold text-brand-600 hover:underline">Read Article &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- Blog Card 2 -->
+                <div class="blog-card physical-card bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-3 font-mono">
+                            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded">Physical Met</span>
+                            <span>7 Min Read</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 mb-2 hover:text-brand-600 cursor-pointer" onclick="openBlogModal(2)">
+                            Top 15 Physical Metallurgy High-Yield Formulas
+                        </h3>
+                        <p class="text-slate-600 text-xs leading-relaxed mb-4">
+                            From XRD Bragg's law calculations to Kirkendall effect diffusion equations and TTT cooling rates, master these key exam equations.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-800">By AIR 1 Rahul Kumar</span>
+                        <button onclick="openBlogModal(2)" class="text-xs font-extrabold text-brand-600 hover:underline">Read Article &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- Blog Card 3 -->
+                <div class="blog-card extractive-card bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mb-3 font-mono">
+                            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded">Extractive</span>
+                            <span>6 Min Read</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 mb-2 hover:text-brand-600 cursor-pointer" onclick="openBlogModal(3)">
+                            Blast Furnace Stoichiometry & Heat Balances
+                        </h3>
+                        <p class="text-slate-600 text-xs leading-relaxed mb-4">
+                            A quick step-by-step guide to solving complex Blast Furnace material balance numericals involving carbon direct/indirect reduction.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-800">By Samarjeet Sir</span>
+                        <button onclick="openBlogModal(3)" class="text-xs font-extrabold text-brand-600 hover:underline">Read Article &rarr;</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Founder & Mentor Section -->
+    <section id="founder" class="py-24 bg-white z-10 relative">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="bg-slate-900 rounded-[3rem] p-8 sm:p-16 text-white relative overflow-hidden shadow-2xl">
+                <div class="grid lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Mentor Visual -->
+                    <div class="lg:col-span-5 text-center" data-aos="zoom-in">
+                        <div class="relative w-64 h-80 sm:w-80 sm:h-96 mx-auto rounded-3xl overflow-hidden border-4 border-slate-700 shadow-2xl group">
+                            <div class="w-full h-full bg-gradient-to-t from-slate-950 via-slate-800 to-slate-700 flex flex-col items-center justify-center p-6">
+                                <i class="fa-solid fa-user-gear text-8xl text-brand-400 mb-4 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-extrabold text-lg text-white">Samarjeet Kumar Singh</span>
+                                <span class="text-xs text-brand-300 font-mono mt-1">Founder & Chief Mentor</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mentor Details -->
+                    <div class="lg:col-span-7" data-aos="fade-up">
+                        <span class="text-brand-400 font-extrabold uppercase tracking-widest text-xs mb-2 block font-mono">Meet The Architect</span>
+                        <h2 class="text-3xl sm:text-5xl font-heading font-extrabold mb-6">Samarjeet Kumar Singh</h2>
+                        <blockquote class="text-slate-300 text-base sm:text-lg italic leading-relaxed mb-8 border-l-4 border-brand-500 pl-4">
+                            "Metallurgy isn't just formulas and phase diagrams. It is about visualizing microstructures and mastering thermodynamics strategy. My mission is to make GATE Metallurgy simple, logical, and scoring."
+                        </blockquote>
+
+                        <div class="grid grid-cols-3 gap-6 border-t border-slate-800 pt-8 mb-8">
+                            <div>
+                                <p class="text-2xl sm:text-3xl font-black text-white font-mono">8+ Yrs</p>
+                                <p class="text-[11px] text-slate-400 uppercase font-bold mt-1">Teaching Exp.</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl sm:text-3xl font-black text-white font-mono">6x AIR 1</p>
+                                <p class="text-[11px] text-slate-400 uppercase font-bold mt-1">Mentored</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl sm:text-3xl font-black text-white font-mono">5,000+</p>
+                                <p class="text-[11px] text-slate-400 uppercase font-bold mt-1">Students Guided</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <a href="https://youtube.com" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                <i class="fa-brands fa-youtube text-base"></i> Watch Free Lectures
+                            </a>
+                            <a href="https://t.me/TestUrSelf" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                <i class="fa-brands fa-telegram text-base"></i> Direct Telegram Channel
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-950 text-slate-400 pt-20 pb-12 border-t border-slate-800 z-10 relative">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
+                <!-- Column 1 -->
+                <div>
+                    <div class="flex items-center gap-2 text-white mb-4">
+                        <div class="bg-brand-600 p-2 rounded-lg"><i class="fa-solid fa-atom"></i></div>
+                        <span class="text-2xl font-black tracking-tight">TestUrSelf</span>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-6 text-slate-400">
+                        India's premier dedicated learning ecosystem specifically designed for Metallurgy engineering students preparing for GATE, BARC, SAIL, and higher studies at IISc & IITs.
+                    </p>
+                </div>
+
+                <!-- Column 2 -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#syllabus-slider" class="hover:text-brand-400 transition">8-Section Syllabus Slider</a></li>
+                        <li><a href="#courses" class="hover:text-brand-400 transition">GATE 2027 Online Classes</a></li>
+                        <li><a href="#courses" class="hover:text-brand-400 transition">National Test Series</a></li>
+                        <li><a href="#tools" class="hover:text-brand-400 transition">GATE MT Rank Estimator</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3 -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Resources</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#legacy" class="hover:text-brand-400 transition">GATE MT Hall of Fame</a></li>
+                        <li><a href="#psu" class="hover:text-brand-400 transition">BARC & SAIL Recruitment Notes</a></li>
+                        <li><a href="#" onclick="openModal('quizModal')" class="hover:text-brand-400 transition">3-Minute Metallurgy Quiz</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4 -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Support & Contact</h4>
+                    <ul class="space-y-3 text-xs">
+                        <li class="flex items-center gap-2.5"><i class="fa-solid fa-envelope text-brand-500"></i> support@testurself.in</li>
+                        <li class="flex items-center gap-2.5"><i class="fa-solid fa-phone text-brand-500"></i> +91 98765 43210</li>
+                        <li class="flex items-center gap-2.5"><i class="fa-solid fa-location-dot text-brand-500"></i> New Delhi, India</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-900 text-center text-xs flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p>&copy; 2027 TestUrSelf. All rights reserved. Built for Metallurgy Engineers.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-slate-200">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-200">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP CHAT WIDGET -->
+    <div id="whatsappWidget" class="fixed bottom-6 right-6 z-[180] transition-all duration-300">
+        <button onclick="toggleWhatsappPanel()" class="bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 sm:px-4 sm:py-3 rounded-full shadow-2xl flex items-center gap-3 hover:scale-105 transition group border-2 border-emerald-300">
+            <i class="fa-brands fa-whatsapp text-2xl animate-bounce"></i>
+            <span class="font-extrabold text-xs hidden sm:inline-block">Chat with Samarjeet Sir</span>
+            <span class="bg-emerald-800 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold hidden sm:inline-block">ONLINE</span>
+        </button>
+
+        <div id="whatsappPanel" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-slate-950 border-2 border-emerald-500/50 rounded-3xl p-5 shadow-2xl backdrop-blur-xl text-white">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border border-emerald-500 flex items-center justify-center text-emerald-400 font-bold">
+                            <i class="fa-solid fa-user-tie text-lg"></i>
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-950"></span>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold text-white">Samarjeet Kumar Singh</h5>
+                        <p class="text-[10px] text-emerald-400 font-mono">Founder & Lead Mentor</p>
+                    </div>
+                </div>
+                <button onclick="toggleWhatsappPanel()" class="text-slate-400 hover:text-white text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-3 bg-slate-900 rounded-2xl border border-slate-800 text-xs leading-relaxed text-slate-300 mb-4">
+                👋 <strong>Hello Metallurgist!</strong> Have questions regarding GATE 2027 preparation, test series, or study material? Select a topic below to chat directly:
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <a href="https://wa.me/919876543210?text=Hi%20Samarjeet%20Sir%2C%20I%20want%20to%20enroll%20in%20GATE%202027%20Live%20Classroom%20Batch." target="_blank" class="block p-2.5 bg-slate-900 hover:bg-emerald-900/40 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-slate-200 transition font-medium">
+                    🎓 GATE 2027 Live Batch Admissions
+                </a>
+                <a href="https://wa.me/919876543210?text=Hi%20Samarjeet%20Sir%2C%20I%20have%20queries%20regarding%20National%20Test%20Series." target="_blank" class="block p-2.5 bg-slate-900 hover:bg-emerald-900/40 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-slate-200 transition font-medium">
+                    📝 National Test Series Query
+                </a>
+                <a href="https://wa.me/919876543210?text=Hi%20Samarjeet%20Sir%2C%20I%20need%20guidance%20for%20BARC%20%26%20SAIL%20Recruitment." target="_blank" class="block p-2.5 bg-slate-900 hover:bg-emerald-900/40 border border-slate-800 hover:border-emerald-500/50 rounded-xl text-xs text-slate-200 transition font-medium">
+                    🚀 BARC & SAIL Direct Preparation
+                </a>
+            </div>
+
+            <div class="flex gap-2">
+                <input type="text" id="waCustomMsg" placeholder="Type custom message..." class="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500">
+                <button onclick="sendCustomWaMsg()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer id="contact">
-    <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem;">
-      <div style="max-width: 450px;">
-        <h3 style="color: #fff; font-size: 1.4rem; margin-bottom: 0.8rem;"><span style="color: #06b6d4;">Test</span>UrSelf</h3>
-        <p style="font-size: 0.95rem; line-height: 1.6;">The premier destination for Metallurgical and Materials Engineering education.</p>
-        <p style="font-size: 0.85rem; margin-top: 1.5rem; color: #6b7280;">&copy; 2026 TestUrSelf. All rights reserved.</p>
-      </div>
-      <div>
-        <h4 style="color: #fff; margin-bottom: 1rem;">Direct Contact</h4>
-        <p style="margin: 0.4rem 0;"><i class="fas fa-envelope" style="color: var(--accent-cyan); margin-right: 8px;"></i> info@testurself.in</p>
-        <p style="margin: 0.4rem 0;"><i class="fas fa-phone" style="color: var(--accent-cyan); margin-right: 8px;"></i> +91 8709271314</p>
-      </div>
+    <!-- FLOATING CYBER LATEST ANNOUNCEMENTS DRAWER WIDGET -->
+    <div id="announcementDrawer" class="fixed bottom-6 left-6 z-[180] transition-all duration-300">
+        <button onclick="toggleAnnouncementDrawer()" class="bg-slate-950 border-2 border-brand-500 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 hover:scale-105 transition group">
+            <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span class="font-extrabold text-xs">Latest Updates</span>
+            <span class="bg-brand-600 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">HOT</span>
+            <i class="fa-solid fa-chevron-up text-xs text-brand-400 group-hover:-translate-y-0.5 transition-transform"></i>
+        </button>
+
+        <div id="announcementContent" class="hidden absolute bottom-16 left-0 w-80 sm:w-96 bg-slate-950 border-2 border-brand-500/50 rounded-3xl p-5 shadow-2xl backdrop-blur-xl text-white">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn text-amber-400 text-sm"></i>
+                    <span class="font-extrabold text-xs tracking-wider uppercase">Live Bulletins</span>
+                </div>
+                <button onclick="toggleAnnouncementDrawer()" class="text-slate-400 hover:text-white text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
+                <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 hover:border-brand-500/40 transition">
+                    <span class="text-[9px] bg-brand-900 text-brand-300 font-mono font-bold px-2 py-0.5 rounded">NEW BATCH</span>
+                    <h5 class="text-xs font-bold text-white mt-1">GATE 2027 Live Classroom Batch Started</h5>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Admissions open with early bird 40% discount coupon "GATE2027".</p>
+                </div>
+
+                <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition">
+                    <span class="text-[9px] bg-emerald-900 text-emerald-300 font-mono font-bold px-2 py-0.5 rounded">PSU UPDATE</span>
+                    <h5 class="text-xs font-bold text-white mt-1">BARC OCES 2027 Exam Schedule Released</h5>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Direct recruitment shortlist expected via GATE MT scores.</p>
+                </div>
+
+                <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 hover:border-amber-500/40 transition">
+                    <span class="text-[9px] bg-amber-900 text-amber-300 font-mono font-bold px-2 py-0.5 rounded">TEST SERIES</span>
+                    <h5 class="text-xs font-bold text-white mt-1">National Mock Test 4 Live Now</h5>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Test your concepts on the TCS iON virtual calculator interface.</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </footer>
 
-  <!-- 3D Interactive Crystal Lattice Script -->
-  <script>
-    (function() {
-      const container = document.getElementById('canvas-container');
-      if (!container) return;
+    <!-- Modal 1: Student Login Portal -->
+    <div id="loginModal" class="hidden fixed inset-0 z-[200] modal-blur flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 relative shadow-2xl border border-slate-200">
+            <button onclick="closeModal('loginModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-slate-900">Student Portal Login</h3>
+                <p class="text-xs text-slate-500 mt-1">Access your enrolled courses and test series</p>
+            </div>
+            <form onsubmit="event.preventDefault(); triggerToast('Login successful! Redirecting to dashboard...'); closeModal('loginModal');" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email / Student ID</label>
+                    <input type="email" required placeholder="student@testurself.in" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg">Login to Account</button>
+            </form>
+        </div>
+    </div>
 
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.z = 8;
+    <!-- Modal 2: Course Enrollment Checkout Preview -->
+    <div id="enrollModal" class="hidden fixed inset-0 z-[200] modal-blur flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl border border-slate-200">
+            <button onclick="closeModal('enrollModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="mb-6">
+                <span class="text-[10px] font-mono bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded">Instant Enrollment</span>
+                <h3 id="enrollCourseTitle" class="text-2xl font-extrabold text-slate-900 mt-2">GATE 2027 Course</h3>
+                <p class="text-xs text-slate-500 mt-1">Complete your registration to unlock immediate LMS access.</p>
+            </div>
 
-      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(renderer.domElement);
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-bold text-slate-700">Applied Discount Code</p>
+                    <p class="text-xs text-emerald-600 font-mono font-bold">"GATE2027" (40% OFF)</p>
+                </div>
+                <span id="enrollCoursePrice" class="text-2xl font-black text-brand-700">₹14,999</span>
+            </div>
 
-      const crystalGroup = new THREE.Group();
-      scene.add(crystalGroup);
+            <form onsubmit="event.preventDefault(); triggerToast('Enrollment request submitted! Check email for payment link.'); closeModal('enrollModal');" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" required placeholder="e.g. Rahul Sharma" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number (WhatsApp)</label>
+                    <input type="tel" required placeholder="+91 9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock text-xs"></i> Proceed to Secure Payment
+                </button>
+            </form>
+        </div>
+    </div>
 
-      const atomMat = new THREE.MeshPhongMaterial({ color: 0x06b6d4, emissive: 0x083344, shininess: 100 });
-      const centerAtomMat = new THREE.MeshPhongMaterial({ color: 0x3b82f6, emissive: 0x1e3a8a, shininess: 100 });
+    <!-- Modal 3: Interactive Quiz Modal -->
+    <div id="quizModal" class="hidden fixed inset-0 z-[200] modal-blur flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl border border-slate-200">
+            <button onclick="closeModal('quizModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-      // Outer Lattice Cube
-      const cubeGeo = new THREE.BoxGeometry(3, 3, 3);
-      const cubeEdges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(cubeGeo),
-        new THREE.LineBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.5 })
-      );
-      crystalGroup.add(cubeEdges);
+            <div id="quizIntro">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-slate-900">3-Minute Metallurgy Pop Quiz</h3>
+                    <p class="text-xs text-slate-500 mt-1">Answer 2 quick GATE questions to win an extra 10% coupon!</p>
+                </div>
+                <button onclick="startQuiz()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg">Start Quiz Now</button>
+            </div>
 
-      // Corner Atoms
-      const atomGeo = new THREE.SphereGeometry(0.24, 32, 32);
-      const corners = [
-        [-1.5,-1.5,-1.5], [1.5,-1.5,-1.5], [-1.5,1.5,-1.5], [1.5,1.5,-1.5],
-        [-1.5,-1.5,1.5], [1.5,-1.5,1.5], [-1.5,1.5,1.5], [1.5,1.5,1.5]
-      ];
-      corners.forEach(p => {
-        const atom = new THREE.Mesh(atomGeo, atomMat);
-        atom.position.set(p[0], p[1], p[2]);
-        crystalGroup.add(atom);
-        
-        // Internal Bonds
-        const points = [new THREE.Vector3(0,0,0), new THREE.Vector3(p[0], p[1], p[2])];
-        const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: 0x0ea5e9, transparent: true, opacity: 0.3 }));
-        crystalGroup.add(line);
-      });
+            <div id="quizBody" class="hidden space-y-4">
+                <p id="quizQuestion" class="font-bold text-slate-800 text-sm">Q1. What is the Atomic Packing Factor (APF) of an FCC crystal structure?</p>
+                <div class="space-y-2" id="quizOptions">
+                    <button onclick="answerQuiz(false)" class="w-full text-left p-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-xs font-semibold">A) 0.68</button>
+                    <button onclick="answerQuiz(true)" class="w-full text-left p-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-xs font-semibold">B) 0.74</button>
+                    <button onclick="answerQuiz(false)" class="w-full text-left p-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-xs font-semibold">C) 0.52</button>
+                </div>
+            </div>
 
-      // Center Atom
-      const centerAtom = new THREE.Mesh(new THREE.SphereGeometry(0.36, 32, 32), centerAtomMat);
-      crystalGroup.add(centerAtom);
+            <div id="quizResult" class="hidden text-center space-y-4">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold text-slate-900">Congratulations!</h3>
+                <p class="text-xs text-slate-600">You unlocked extra discount coupon code: <span class="font-mono font-bold bg-amber-100 text-amber-800 px-2 py-1 rounded">"TOPPER10"</span></p>
+                <button onclick="closeModal('quizModal'); filterCourses('all')" class="w-full bg-brand-600 text-white font-bold py-3 rounded-xl text-xs">Claim Discount on Courses</button>
+            </div>
+        </div>
+    </div>
 
-      // Lighting
-      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-      const pLight = new THREE.PointLight(0x06b6d4, 2, 50);
-      pLight.position.set(5, 5, 5);
-      scene.add(pLight);
+    <!-- Modal 4: Study Schedule Generator Modal -->
+    <div id="scheduleModal" class="hidden fixed inset-0 z-[200] modal-blur flex items-center justify-center p-4">
+        <div class="bg-slate-950 text-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl border border-slate-800">
+            <button onclick="closeModal('scheduleModal')" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="mb-6">
+                <span class="text-[10px] font-mono bg-brand-900 text-brand-300 font-bold px-2.5 py-1 rounded">AI Study Roadmap</span>
+                <h3 class="text-2xl font-extrabold text-white mt-2">Generate GATE MT Schedule</h3>
+                <p class="text-xs text-slate-400 mt-1">Receive a weekly target breakdown tailored for GATE MT.</p>
+            </div>
+            <form onsubmit="event.preventDefault(); triggerToast('Study roadmap sent to your registered WhatsApp!'); closeModal('scheduleModal');" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Target GATE Year</label>
+                    <select class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm">
+                        <option>GATE 2027 (February 2027)</option>
+                        <option>GATE 2028 (February 2028)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Daily Study Hours Available</label>
+                    <select class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm">
+                        <option>2 - 3 Hours (College Student)</option>
+                        <option>4 - 6 Hours (Dedicated Aspirant)</option>
+                        <option>8+ Hours (Full Time Drop Year)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">WhatsApp Number</label>
+                    <input type="tel" required placeholder="+91 9876543210" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm">
+                </div>
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg">
+                    Send Personalized Plan
+                </button>
+            </form>
+        </div>
+    </div>
 
-      // Mouse Parallax
-      let mx = 0, my = 0;
-      window.addEventListener('mousemove', (e) => {
-        mx = (e.clientX / window.innerWidth - 0.5) * 0.8;
-        my = (e.clientY / window.innerHeight - 0.5) * 0.8;
-      });
+    <!-- Modal 5: Blog Article Preview Modal -->
+    <div id="blogModal" class="hidden fixed inset-0 z-[200] modal-blur flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-8 relative shadow-2xl border border-slate-200 max-h-[85vh] overflow-y-auto">
+            <button onclick="closeModal('blogModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <span id="blogModalCategory" class="text-[10px] font-mono bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded">Thermodynamics</span>
+            <h3 id="blogModalTitle" class="text-2xl font-extrabold text-slate-900 mt-3 mb-2">Mastering Ellingham Diagrams in 3 Easy Steps</h3>
+            <p id="blogModalMeta" class="text-xs text-slate-500 mb-6 font-mono">By Samarjeet Kumar Singh • Published for GATE MT Aspirants</p>
+            
+            <div id="blogModalBody" class="prose prose-slate text-xs sm:text-sm text-slate-700 space-y-4 leading-relaxed border-t border-slate-100 pt-4">
+                <!-- Dynamic Content injected by JS -->
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center">
+                <button onclick="triggerToast('Download started for Metallurgy PDF Cheat Sheet!'); closeModal('blogModal');" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition shadow-md">
+                    <i class="fa-solid fa-file-arrow-down"></i> Download PDF Formula Cheat Sheet
+                </button>
+            </div>
+        </div>
+    </div>
 
-      function animate() {
-        requestAnimationFrame(animate);
-        crystalGroup.rotation.y += 0.005;
-        crystalGroup.rotation.x += 0.003;
-        crystalGroup.rotation.y += (mx - crystalGroup.rotation.y * 0.1) * 0.05;
-        crystalGroup.rotation.x += (my - crystalGroup.rotation.x * 0.1) * 0.05;
-        renderer.render(scene, camera);
-      }
-      animate();
+    <!-- VIRTUAL SCIENTIFIC CALCULATOR MODAL (TCS iON STYLE) -->
+    <div id="calcModal" class="hidden fixed inset-0 z-[220] modal-blur flex items-center justify-center p-4">
+        <div class="bg-slate-950 border-2 border-amber-500 text-white rounded-3xl max-w-sm w-full p-5 relative shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                <span class="font-mono font-bold text-xs text-amber-400"><i class="fa-solid fa-calculator mr-1"></i> GATE Virtual Calculator</span>
+                <button onclick="closeModal('calcModal')" class="text-slate-400 hover:text-white text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-      window.addEventListener('resize', () => {
-        if (!container) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
-    })();
-  </script>
+            <!-- Display Screen -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 mb-4 text-right">
+                <div id="calcExpr" class="text-[10px] font-mono text-slate-500 h-4"></div>
+                <div id="calcVal" class="text-2xl font-mono font-black text-amber-300">0</div>
+            </div>
+
+            <!-- Calculator Keypad Grid -->
+            <div class="grid grid-cols-4 gap-2 text-xs font-mono font-bold">
+                <button onclick="calcKey('C')" class="p-2.5 bg-rose-900/60 text-rose-300 rounded-lg hover:bg-rose-800">C</button>
+                <button onclick="calcKey('(')" class="p-2.5 bg-slate-900 text-slate-300 rounded-lg hover:bg-slate-800">(</button>
+                <button onclick="calcKey(')')" class="p-2.5 bg-slate-900 text-slate-300 rounded-lg hover:bg-slate-800">)</button>
+                <button onclick="calcKey('/')" class="p-2.5 bg-brand-900 text-brand-300 rounded-lg hover:bg-brand-800">/</button>
+
+                <button onclick="calcKey('7')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">7</button>
+                <button onclick="calcKey('8')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">8</button>
+                <button onclick="calcKey('9')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">9</button>
+                <button onclick="calcKey('*')" class="p-2.5 bg-brand-900 text-brand-300 rounded-lg hover:bg-brand-800">*</button>
+
+                <button onclick="calcKey('4')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">4</button>
+                <button onclick="calcKey('5')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">5</button>
+                <button onclick="calcKey('6')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">6</button>
+                <button onclick="calcKey('-')" class="p-2.5 bg-brand-900 text-brand-300 rounded-lg hover:bg-brand-800">-</button>
+
+                <button onclick="calcKey('1')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">1</button>
+                <button onclick="calcKey('2')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">2</button>
+                <button onclick="calcKey('3')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">3</button>
+                <button onclick="calcKey('+')" class="p-2.5 bg-brand-900 text-brand-300 rounded-lg hover:bg-brand-800">+</button>
+
+                <button onclick="calcKey('0')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">0</button>
+                <button onclick="calcKey('.')" class="p-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800">.</button>
+                <button onclick="calcKey('ln')" class="p-2.5 bg-purple-900/60 text-purple-300 rounded-lg hover:bg-purple-800">ln</button>
+                <button onclick="calcKey('=')" class="p-2.5 bg-amber-500 text-slate-950 rounded-lg hover:bg-amber-400 font-extrabold">=</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Popup -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[250] bg-slate-900 text-white text-xs font-bold px-5 py-3.5 rounded-xl shadow-2xl border border-slate-700 hidden flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastMsg">Action completed successfully!</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize AOS
+            if (typeof AOS !== 'undefined') {
+                AOS.init({ once: true, duration: 800, easing: 'ease-out-quad' });
+            }
+
+            // Mobile menu toggle
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileBtn && mobileMenu) {
+                mobileBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Glass navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (nav) {
+                    if (window.scrollY > 40) {
+                        nav.classList.add('shadow-md');
+                    } else {
+                        nav.classList.remove('shadow-md');
+                    }
+                }
+            });
+
+            // Ambient particle lattice background
+            initAmbientCanvas();
+
+            // Start Live Countdown Clock
+            updateCountdownClock();
+            setInterval(updateCountdownClock, 1000);
+
+            // Syllabus Slider Auto-slide
+            startSyllabusAutoSlider();
+        });
+
+        function initAmbientCanvas() {
+            const canvas = document.getElementById('ambientBgCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = [];
+            const particleCount = Math.min(Math.floor(width / 25), 50);
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 2.5 + 1
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = '#2563eb';
+                ctx.strokeStyle = 'rgba(37, 99, 235, 0.15)';
+
+                for (let i = 0; i < particleCount; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 130) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        let targetYear = '2027';
+        function setCountdownTarget(year) {
+            targetYear = year;
+            const btn2027 = document.getElementById('btnExam2027');
+            const btn2028 = document.getElementById('btnExam2028');
+            const label = document.getElementById('targetExamLabel');
+
+            if (label) label.textContent = year;
+
+            if (year === '2027') {
+                btn2027.className = 'px-5 py-2.5 rounded-xl text-xs font-mono font-extrabold transition-all bg-brand-600 text-white shadow-lg';
+                btn2028.className = 'px-5 py-2.5 rounded-xl text-xs font-mono font-extrabold transition-all text-slate-400 hover:text-white';
+            } else {
+                btn2028.className = 'px-5 py-2.5 rounded-xl text-xs font-mono font-extrabold transition-all bg-brand-600 text-white shadow-lg';
+                btn2027.className = 'px-5 py-2.5 rounded-xl text-xs font-mono font-extrabold transition-all text-slate-400 hover:text-white';
+            }
+            updateCountdownClock();
+        }
+
+        function updateCountdownClock() {
+            const targetDate = targetYear === '2027' ? new Date('February 6, 2027 09:30:00') : new Date('February 5, 2028 09:30:00');
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('cdDays').textContent = '00';
+                document.getElementById('cdHours').textContent = '00';
+                document.getElementById('cdMins').textContent = '00';
+                document.getElementById('cdSecs').textContent = '00';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diff / 1000 / 60) % 60);
+            const secs = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+            document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
+            document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
+        }
+
+        let currentSyllabusIndex = 0;
+        const totalSyllabusSlides = 8;
+        let syllabusSliderTimer = null;
+
+        function goToSyllabusSlide(idx) {
+            currentSyllabusIndex = idx;
+            const wrapper = document.getElementById('syllabus-slides-wrapper');
+            if (wrapper) {
+                wrapper.style.transform = `translateX(-${currentSyllabusIndex * 100}%)`;
+            }
+
+            // Update top section jump tabs
+            const tabBtns = document.querySelectorAll('.syl-tab-btn');
+            tabBtns.forEach((btn, i) => {
+                if (i === idx) {
+                    btn.className = 'syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-brand-600 text-white shadow-lg transition';
+                } else {
+                    btn.className = 'syl-tab-btn px-4 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition';
+                }
+            });
+
+            // Update bottom dots
+            const dots = document.querySelectorAll('.syl-dot');
+            dots.forEach((dot, i) => {
+                if (i === idx) {
+                    dot.className = 'syl-dot w-8 h-2 rounded-full bg-brand-500 transition-all';
+                } else {
+                    dot.className = 'syl-dot w-2 h-2 rounded-full bg-slate-700 transition-all';
+                }
+            });
+        }
+
+        function nextSyllabusSlide() {
+            const nextIdx = (currentSyllabusIndex + 1) % totalSyllabusSlides;
+            goToSyllabusSlide(nextIdx);
+        }
+
+        function prevSyllabusSlide() {
+            const prevIdx = (currentSyllabusIndex - 1 + totalSyllabusSlides) % totalSyllabusSlides;
+            goToSyllabusSlide(prevIdx);
+        }
+
+        function startSyllabusAutoSlider() {
+            const sliderBox = document.getElementById('syllabus-slider-box');
+            syllabusSliderTimer = setInterval(nextSyllabusSlide, 6000);
+
+            if (sliderBox) {
+                sliderBox.addEventListener('mouseenter', () => clearInterval(syllabusSliderTimer));
+                sliderBox.addEventListener('mouseleave', () => {
+                    clearInterval(syllabusSliderTimer);
+                    syllabusSliderTimer = setInterval(nextSyllabusSlide, 6000);
+                });
+            }
+        }
+
+        function qodMarkReview() {
+            const btn = document.getElementById('qBtn1');
+            if (btn) btn.className = 'w-9 h-9 bg-purple-600 text-white rounded-lg border border-purple-400 flex items-center justify-center font-bold';
+            document.getElementById('legRev').textContent = '1';
+            document.getElementById('legNotAns').textContent = '0';
+            triggerToast('Question marked for review!');
+        }
+
+        function qodClear() {
+            const radios = document.getElementsByName('qod');
+            radios.forEach(r => r.checked = false);
+            const sol = document.getElementById('qodSolution');
+            if (sol) sol.classList.add('hidden');
+            const btn = document.getElementById('qBtn1');
+            if (btn) btn.className = 'w-9 h-9 bg-rose-600 text-white rounded-lg border border-rose-500 flex items-center justify-center font-bold';
+            document.getElementById('legAns').textContent = '0';
+            document.getElementById('legNotAns').textContent = '1';
+            triggerToast('Response cleared.');
+        }
+
+        function qodSubmit() {
+            const radios = document.getElementsByName('qod');
+            let selected = null;
+            radios.forEach(r => { if (r.checked) selected = r.value; });
+
+            if (!selected) {
+                triggerToast('Please select an option before submitting!');
+                return;
+            }
+
+            const sol = document.getElementById('qodSolution');
+            if (sol) sol.classList.remove('hidden');
+            const btn = document.getElementById('qBtn1');
+            if (btn) btn.className = 'w-9 h-9 bg-emerald-600 text-white rounded-lg border border-emerald-400 flex items-center justify-center font-bold';
+            document.getElementById('legAns').textContent = '1';
+            document.getElementById('legNotAns').textContent = '0';
+            triggerToast('Answer evaluated! View thermodynamic derivation below.');
+        }
+
+        let calcCurrentVal = '0';
+        function calcKey(key) {
+            const valDisplay = document.getElementById('calcVal');
+            const exprDisplay = document.getElementById('calcExpr');
+            if (!valDisplay) return;
+
+            if (key === 'C') {
+                calcCurrentVal = '0';
+                if (exprDisplay) exprDisplay.textContent = '';
+            } else if (key === '=') {
+                try {
+                    let sanitized = calcCurrentVal.replace(/ln/g, 'Math.log');
+                    calcCurrentVal = eval(sanitized).toString();
+                } catch (e) {
+                    calcCurrentVal = 'Error';
+                }
+            } else if (key === 'ln') {
+                calcCurrentVal += 'Math.log(';
+            } else {
+                if (calcCurrentVal === '0') calcCurrentVal = key;
+                else calcCurrentVal += key;
+            }
+            valDisplay.textContent = calcCurrentVal;
+        }
+
+        function calculateRank() {
+            const marksInput = document.getElementById('gateMarks');
+            const marks = parseFloat(marksInput ? marksInput.value : 65) || 0;
+
+            let score = Math.round((marks / 100) * 920);
+            let minRank, maxRank, eligibility;
+
+            if (marks >= 80) {
+                minRank = 1; maxRank = 10;
+                eligibility = "Direct PSU Offer (BARC/SAIL) & IIT Bombay";
+            } else if (marks >= 65) {
+                minRank = 11; maxRank = 60;
+                eligibility = "IIT Madras, IIT Kanpur, IIT Kharagpur M.Tech";
+            } else if (marks >= 50) {
+                minRank = 61; maxRank = 200;
+                eligibility = "Top NITs & IISc Research Interview Shortlist";
+            } else {
+                minRank = 201; maxRank = 700;
+                eligibility = "State Universities & Self-Sponsored M.Tech";
+            }
+
+            document.getElementById('outScore').textContent = score;
+            document.getElementById('outRank').textContent = `AIR ${minRank} - ${maxRank}`;
+            document.getElementById('outEligibility').textContent = eligibility;
+            triggerToast('Score and rank calculated!');
+        }
+
+        function filterCourses(category) {
+            const cards = document.querySelectorAll('.course-card');
+            const btns = document.querySelectorAll('.course-tab-btn');
+
+            btns.forEach(btn => btn.classList.remove('tab-active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('tab-active');
+            }
+
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(`${category}-card`)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterBlogs(category) {
+            const cards = document.querySelectorAll('.blog-card');
+            const btns = document.querySelectorAll('.blog-tab-btn');
+
+            btns.forEach(btn => {
+                btn.className = 'blog-tab-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 border border-slate-200 hover:bg-slate-100';
+            });
+
+            if (event && event.currentTarget) {
+                event.currentTarget.className = 'blog-tab-btn px-5 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-md';
+            }
+
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(`${category}-card`)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        const blogArticlesData = {
+            1: {
+                category: "Thermodynamics",
+                title: "Mastering Ellingham Diagrams in 3 Easy Steps",
+                meta: "By Samarjeet Kumar Singh • Published for GATE MT Aspirants",
+                body: `
+                    <p>Ellingham diagrams represent the Gibbs free energy change (&Delta;G&deg;) for the formation of metal oxides as a function of temperature. They provide critical insights into:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Relative thermodynamic stability of metal oxides.</li>
+                        <li>Selection of reducing agents (C, CO, H2, or active metals like Al).</li>
+                        <li>Oxygen partial pressure threshold P_O2 required for oxide dissociation.</li>
+                    </ul>
+                    <p class="font-bold text-slate-900 mt-3">Key Formula to Remember:</p>
+                    <div class="bg-slate-900 text-amber-300 p-3 rounded-xl font-mono text-center text-xs">
+                        &Delta;G&deg; = -R T ln(K) = R T ln(P_O2)
+                    </div>
+                `
+            },
+            2: {
+                category: "Physical Metallurgy",
+                title: "Top 15 Physical Metallurgy High-Yield Formulas",
+                meta: "By AIR 1 Rahul Kumar • Published for GATE MT Aspirants",
+                body: `
+                    <p>Physical Metallurgy accounts for nearly 20% of the total GATE MT paper. Master these 3 critical derivation domains:</p>
+                    <ol class="list-decimal pl-5 space-y-1">
+                        <li><strong>Bragg's Law of Diffraction:</strong> &lambda; = 2d sin(&theta;)</li>
+                        <li><strong>Kirkendall Effect Flux:</strong> Net atom movement due to unequal diffusion coefficients D_A &ne; D_B.</li>
+                        <li><strong>Lever Rule for Phase Fractions:</strong> W_&alpha; = (C_0 - C_&beta;) / (C_&alpha; - C_&beta;)</li>
+                    </ol>
+                    <div class="bg-slate-900 text-blue-300 p-3 rounded-xl font-mono text-center text-xs mt-3">
+                        d_{hkl} = a / &radic;(h&sup2; + k&sup2; + l&sup2;)
+                    </div>
+                `
+            },
+            3: {
+                category: "Extractive Metallurgy",
+                title: "Blast Furnace Stoichiometry & Heat Balances",
+                meta: "By Samarjeet Kumar Singh • Published for GATE MT Aspirants",
+                body: `
+                    <p>Blast Furnace ironmaking numerical problems are frequently asked in GATE Section 4. Follow this standard solution sequence:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Indirect Reduction in Stack:</strong> Fe2O3 + 3CO &rarr; 2Fe + 3CO2</li>
+                        <li><strong>Direct Reduction in Hearth:</strong> FeO + C &rarr; Fe + CO (&Delta;H is highly endothermic)</li>
+                        <li><strong>Carbon Rate Calculation:</strong> Relate total C consumed to top gas CO/CO2 ratio.</li>
+                    </ul>
+                `
+            }
+        };
+
+        function openBlogModal(id) {
+            const data = blogArticlesData[id] || blogArticlesData[1];
+            document.getElementById('blogModalCategory').textContent = data.category;
+            document.getElementById('blogModalTitle').textContent = data.title;
+            document.getElementById('blogModalMeta').textContent = data.meta;
+            document.getElementById('blogModalBody').innerHTML = data.body;
+            openModal('blogModal');
+        }
+
+        function toggleWhatsappPanel() {
+            const panel = document.getElementById('whatsappPanel');
+            if (panel) panel.classList.toggle('hidden');
+        }
+
+        function sendCustomWaMsg() {
+            const input = document.getElementById('waCustomMsg');
+            if (!input || !input.value.trim()) return;
+            const encoded = encodeURIComponent(input.value.trim());
+            window.open(`https://wa.me/919876543210?text=${encoded}`, '_blank');
+            input.value = '';
+            toggleWhatsappPanel();
+        }
+
+        function toggleAnnouncementDrawer() {
+            const panel = document.getElementById('announcementContent');
+            if (panel) panel.classList.toggle('hidden');
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+
+        function enrollModal(courseTitle, price) {
+            const titleEl = document.getElementById('enrollCourseTitle');
+            const priceEl = document.getElementById('enrollCoursePrice');
+            if (titleEl) titleEl.textContent = courseTitle;
+            if (priceEl) priceEl.textContent = `₹${price.toLocaleString('en-IN')}`;
+            openModal('enrollModal');
+        }
+
+        function triggerToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            if (msgEl) msgEl.textContent = msg;
+            if (toast) {
+                toast.classList.remove('hidden');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 3500);
+            }
+        }
+
+        function startQuiz() {
+            const intro = document.getElementById('quizIntro');
+            const body = document.getElementById('quizBody');
+            if (intro) intro.classList.add('hidden');
+            if (body) body.classList.remove('hidden');
+        }
+
+        function answerQuiz(isCorrect) {
+            const body = document.getElementById('quizBody');
+            const result = document.getElementById('quizResult');
+            if (body) body.classList.add('hidden');
+            if (result) result.classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
